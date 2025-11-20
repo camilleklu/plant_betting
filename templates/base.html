@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Paris Plantes{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-green-600 text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <a href="{% url 'home' %}" class="text-xl font-bold">🌱 Paris Plantes</a>
+
+                <div class="flex items-center space-x-4">
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'plant_list' %}" class="hover:text-green-200">Plantes</a>
+                    <a href="{% url 'leaderboard' %}" class="hover:text-green-200">Classement</a>
+                    <a href="{% url 'profile' %}" class="hover:text-green-200">Profil</a>
+                    <a href="{% url 'logout' %}"
+                        class="bg-green-700 px-3 py-1 rounded hover:bg-green-800">Déconnexion</a>
+                    {% else %}
+                    <a href="{% url 'login' %}" class="hover:text-green-200">Connexion</a>
+                    <a href="{% url 'register' %}"
+                        class="bg-green-700 px-3 py-1 rounded hover:bg-green-800">Inscription</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="max-w-7xl mx-auto px-4 mt-4">
+        {% for message in messages %}
+        <div
+            class="alert alert-{{ message.tags }} p-4 mb-4 rounded {% if message.tags == 'success' %}bg-green-100 text-green-800{% elif message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-blue-100 text-blue-800{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Contenu principal -->
+    <main class="min-h-screen">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p>&copy; 2024 Paris Plantes. Tous droits réservés.</p>
+            <div class="mt-4">
+                <a href="{% url 'rules' %}" class="text-gray-300 hover:text-white mx-2">Règles</a>
+                <a href="#" class="text-gray-300 hover:text-white mx-2">Contact</a>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
