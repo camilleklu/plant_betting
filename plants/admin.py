@@ -10,7 +10,7 @@ class PlantMeasurementInline(admin.TabularInline):
     """
     model = PlantMeasurement
     extra = 0
-    readonly_fields = ['measured_at']
+    readonly_fields = ['measured_at', 'unit_display']
     fields = ['criterion', 'value', 'unit_display', 'measured_at', 'notes']
     
     def unit_display(self, obj):
