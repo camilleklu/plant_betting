@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-gradient-to-r from-green-500 to-green-600 text-white py-20">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+        <h1 class="text-5xl font-bold mb-6">Paris sur la Mort des Plantes</h1>
+        <p class="text-xl mb-8">Pariez sur la durée de vie des plantes et montez dans le classement!</p>
+
+        {% if not user.is_authenticated %}
+        <div class="space-x-4">
+            <a href="{% url 'register' %}"
+                class="bg-white text-green-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100">
+                Commencer à parier
+            </a>
+        </div>
+        {% else %}
+        <div class="space-x-4">
+            <a href="{% url 'plant_list' %}"
+                class="bg-white text-green-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100">
+                Voir les plantes
+            </a>
+            <a href="{% url 'plant_add' %}"
+                class="border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-green-600">
+                Ajouter une plante
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Statistiques -->
+<section class="py-12 bg-white">
+    <h1>Règle de Paris Plantes</h1>
+    <h2>Création et Participation aux paris</h2>
+    <ul>
+        <li>Unique le propriétaire de la plante peut créer un pari sur sa plante</li>
+        <li>Interdiction de parier sur sa propre plante</li>
+        <li>La plante une fois en ligne reste pour une durée de 15 à 30 jours</li>
+        <li>Une photo de la plante est obligatoire</li>
+    </ul>
+    <h2>Système de mises et de gains</h2>
+    <h3>Montants des paris :</h3>
+    <ul>
+        <li>Minimum : 10 points</li>
+        <li>Maximum : 500 points</li>
+        <li>Pas de limite quotidienne</li>
+    </ul>
+    <h3>Calcul des gains :</h3>
+    <ul>
+        <li>Précision parfaite (le bon jour) → Mise x 5</li>
+        <li>Précision excellente (±1 à 3 jours) → Mise x 3</li>
+        <li>Précision excellente (±4 à 7 jours) → Mise x 1.5</li>
+        <li>Pari incorrect → Perte de toute la mise</li>
+    </ul>
+    <h2>Economie du jeu</h2>
+    <h3>Gains :</h3>
+    <ul>
+        <li>Recevez votre mise + multiplicateur selon la précision</li>
+        <li>Exemple: Mise de 100 points x 5 = 500 points gagnés</li>
+    </ul>
+    <h3>Pertes :</h3>
+    <ul>
+        <li>Pari incorrect = perte totale des points misés</li>
+        <li>Pas de remboursement des points misés</li>
+    </ul>
+    <h2>Classement</h2>
+    <ul>
+        <li>Basé sur le total des points accumulés</li>
+        <li>Les points utilisés sur un paris en cour ne sont pas pris en compte dans le compte total des points de l'utilisateur</li>
+        <li>Pas d'autre classement</li>
+    </ul>
+    <h2>Transparence et équité</h2>
+    <ul>
+        <li>Le journal de soin est partagé</li>
+        <li>Signalement de comportement suspect</li>
+    </ul>
+    <h2>Stratégie recommandée</h2>
+    <h3>Pour des petits paris :</h3>
+    <ul>
+        <li>Gain maximum : 100 x 5 points</li>
+        <li>Risque limité : perte max de 100 points</li>
+    </ul>
+    <h3>Pour des gros paris :</h3>
+    <ul>
+        <li>Gain maximum : 500 x 5 = 2500 points</li>
+        <li>Risque élevé : perte max de 500 points</li>
+    </ul>
+</section>
+{% endblock %}
