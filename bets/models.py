@@ -23,7 +23,7 @@ class Bet(models.Model):
             
         days_diff = abs((self.predicted_death_date - self.plant.death_date).days)
         
-        if days_diff <= 1:
+        if days_diff < 1:
             return int(self.bet_amount * 5)
         elif days_diff <= 3:
             return int(self.bet_amount * 3)
