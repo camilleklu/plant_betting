@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+env/
+
+# Django
+*.log
+*.pot
+*.pyc
+db.sqlite3
+media/
+staticfiles/
+
+# Django Migrations (optionnel : garder si tu veux tracker les migrations)
+# Si tu veux tracker les migrations, supprime cette ligne :
+**/migrations/*.py
+!**/migrations/__init__.py
+
+# VSCode / IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python build artifacts
+dist/
+build/
+*.egg-info/
+
+# Environment variables
+.env
+*.env
+
+# Compiled bytecode inside project folders
+plant_betting/__pycache__/
+betting/__pycache__/
+betting/migrations/__pycache__/
+users/__pycache__/
