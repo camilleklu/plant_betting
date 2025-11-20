@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Mon Profil - Paris Plantes{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-8">Mon Profil</h1>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Colonne de gauche : Informations du compte -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Carte des informations personnelles -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800">Informations personnelles</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nom d'utilisateur</label>
+                            {{ form.username }}
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            {{ form.email }}
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+                            {{ form.last_name }}
+                        </div>
+                    </div>
+                    <button type="submit"
+                        class="mt-4 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-300">
+                        Mettre à jour le profil
+                    </button>
+                </form>
+            </div>
+
+            <!-- Carte de changement de mot de passe -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800">Sécurité</h2>
+                <a href="{% url 'change_password' %}"
+                    class="inline-block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300">
+                    Changer mon mot de passe
+                </a>
+            </div>
+        </div>
+
+        <!-- Colonne de droite : Statistiques -->
+        <div class="space-y-6">
+            <!-- Carte des statistiques -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800">Mes Statistiques</h2>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Points totaux</span>
+                        <span class="font-bold text-green-600">{{ user_score.total_points }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Classement</span>
+                        <span class="font-bold text-blue-600">#{{ user_score.rank }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Paris gagnés</span>
+                        <span class="font-bold text-green-600">{{ user_score.bets_won }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Paris perdus</span>
+                        <span class="font-bold text-red-600">{{ user_score.bets_lost }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Taux de réussite</span>
+                        <span class="font-bold text-purple-600">{{ user_score.accuracy_rate|floatformat:1 }}%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carte des activités récentes -->
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h2 class="text-xl font-semibold mb-4 text-gray-800">Mes Activités</h2>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Plantes ajoutées</span>
+                        <span class="font-bold text-gray-800">{{ user_plants.count }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Paris en cours</span>
+                        <span class="font-bold text-yellow-600">{{ active_bets.count }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Paris terminés</span>
+                        <span class="font-bold text-gray-800">{{ past_bets.count }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

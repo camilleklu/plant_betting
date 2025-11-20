@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from plants.models import Plant
 from bets.models import Bet
 from leaderboard.models import UserScore
+from .forms import CustomUserCreationForm
 
 def home(request):
     active_plants = Plant.objects.filter(is_active=True).order_by('-created_at')[:6]
@@ -21,14 +23,14 @@ def home(request):
 
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
             messages.success(request, 'Compte créé avec succès!')
             return redirect('home')
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
     return render(request, 'core/register.html', {'form': form})
 
 def login_view(request):
@@ -53,7 +55,12 @@ def logout_view(request):
 
 @login_required
 def profile(request):
-    user_score = UserScore.objects.get(user=request.user)
+    try:
+        user_score = UserScore.objects.get(user=request.user)
+    except UserScore.DoesNotExist:
+        # Créer le UserScore s'il n'existe pas
+        user_score = UserScore.objects.create(user=request.user)
+    
     active_bets = Bet.objects.filter(user=request.user, is_resolved=False)
     past_bets = Bet.objects.filter(user=request.user, is_resolved=True)
     
@@ -63,6 +70,26 @@ def profile(request):
         'past_bets': past_bets,
     }
     return render(request, 'core/profile.html', context)
+
+@login_required
+def change_password(request):
+    """
+    Vue pour changer le mot de passe de l'utilisateur connecté
+    """
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Mettre à jour la session pour éviter la déconnexion
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Votre mot de passe a été changé avec succès!')
+            return redirect('profile')
+        else:
+            messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
+    else:
+        form = PasswordChangeForm(request.user)
+    
+    return render(request, 'core/change_password.html', {'form': form})
 
 def rules(request):
     return render(request, 'core/rules.html')
