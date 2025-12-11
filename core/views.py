@@ -1,13 +1,19 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
+from django.contrib.auth.models import User # <-- Nécessaire pour chercher l'email
+
+# Imports de tes modèles
 from plants.models import Plant
 from bets.models import Bet
 from leaderboard.models import UserScore
-from .forms import CustomUserCreationForm
+
+# Imports de tes formulaires
+# Assure-toi d'importer le bon formulaire ici (CustomAuthenticationForm)
+from .forms import CustomUserCreationForm, ProfileUpdateForm, CustomAuthenticationForm
 
 def home(request):
     active_plants = Plant.objects.filter(is_active=True).order_by('-created_at')[:6]
@@ -27,25 +33,40 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request, 'Compte créé avec succès!')
+            messages.success(request, "Inscription réussie ! Bienvenue.")
             return redirect('home')
     else:
         form = CustomUserCreationForm()
     return render(request, 'core/register.html', {'form': form})
 
+# --- NOUVELLE LOGIQUE DE CONNEXION ---
 def login_view(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
+        form = CustomAuthenticationForm(data=request.POST)
         if form.is_valid():
-            username = form.cleaned_data.get('username')
+            email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                messages.success(request, f'Bienvenue {username}!')
-                return redirect('home')
+            
+            # 1. On cherche d'abord s'il existe un utilisateur avec cet email
+            try:
+                user_obj = User.objects.get(email=email)
+                # 2. Si oui, on récupère son username pour l'authentification Django standard
+                user = authenticate(username=user_obj.username, password=password)
+                
+                if user is not None:
+                    login(request, user)
+                    messages.success(request, f'Ravi de vous revoir, {user.username} !')
+                    # Gestion de la redirection "next" (si l'utilisateur venait d'une page protégée)
+                    next_url = request.POST.get('next') or request.GET.get('next')
+                    return redirect(next_url if next_url else 'home')
+                else:
+                    messages.error(request, 'Mot de passe incorrect.')
+            
+            except User.DoesNotExist:
+                messages.error(request, 'Aucun compte ne correspond à cet email.')
     else:
-        form = AuthenticationForm()
+        form = CustomAuthenticationForm()
+    
     return render(request, 'core/login.html', {'form': form})
 
 def logout_view(request):
@@ -55,32 +76,50 @@ def logout_view(request):
 
 @login_required
 def profile(request):
+    # 1. Gestion des Scores
     try:
         user_score = UserScore.objects.get(user=request.user)
     except UserScore.DoesNotExist:
-        # Créer le UserScore s'il n'existe pas
         user_score = UserScore.objects.create(user=request.user)
     
+    # 2. Gestion des Paris
     active_bets = Bet.objects.filter(user=request.user, is_resolved=False)
     past_bets = Bet.objects.filter(user=request.user, is_resolved=True)
+
+    # 3. Gestion des Plantes
+    # J'ai remis user=request.user car c'est le standard Django. 
+    # Si ton modèle plante utilise 'owner' ou 'author', change ce mot ci-dessous.
+    try:
+        user_plants = Plant.objects.filter(user=request.user)
+    except:
+        # Fallback au cas où le champ s'appelle autrement
+        user_plants = [] 
+
+    # 4. Gestion du Formulaire de Profil
+    if request.method == 'POST':
+        form = ProfileUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Votre profil a été mis à jour !')
+            return redirect('profile')
+    else:
+        form = ProfileUpdateForm(instance=request.user)
     
     context = {
         'user_score': user_score,
         'active_bets': active_bets,
         'past_bets': past_bets,
+        'user_plants': user_plants,
+        'form': form,
     }
     return render(request, 'core/profile.html', context)
 
 @login_required
 def change_password(request):
-    """
-    Vue pour changer le mot de passe de l'utilisateur connecté
-    """
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             user = form.save()
-            # Mettre à jour la session pour éviter la déconnexion
             update_session_auth_hash(request, user)
             messages.success(request, 'Votre mot de passe a été changé avec succès!')
             return redirect('profile')

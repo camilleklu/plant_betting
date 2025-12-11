@@ -7,9 +7,7 @@
     <h1 class="text-3xl font-bold text-gray-800 mb-8">Mon Profil</h1>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Colonne de gauche : Informations du compte -->
         <div class="lg:col-span-2 space-y-6">
-            <!-- Carte des informations personnelles -->
             <div class="bg-white rounded-xl shadow-md p-6">
                 <h2 class="text-xl font-semibold mb-4 text-gray-800">Informations personnelles</h2>
                 <form method="post">
@@ -22,14 +20,6 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                             {{ form.email }}
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
-                            {{ form.first_name }}
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
-                            {{ form.last_name }}
                         </div>
                     </div>
                     <button type="submit"

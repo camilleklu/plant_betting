@@ -55,15 +55,6 @@
                 {% endfor %}
             </div>
             {% endif %}
-            {% if form.password1.help_text %}
-            <div class="text-xs text-gray-500 mt-1 space-y-1">
-                {% for help in form.password1.help_text %}
-                <p class="flex items-start">
-                    <span class="mr-1">•</span> {{ help }}
-                </p>
-                {% endfor %}
-            </div>
-            {% endif %}
         </div>
 
         <div>

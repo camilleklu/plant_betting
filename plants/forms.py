@@ -5,10 +5,22 @@ class PlantForm(forms.ModelForm):
     class Meta:
         model = Plant
         fields = ['name', 'species', 'category', 'image']
+        
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-input'}),
-            'species': forms.TextInput(attrs={'class': 'form-input'}),
-            'category': forms.TextInput(attrs={'class': 'form-input'}),
+            'name': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200',
+                'placeholder': 'Ex: Mon Ficus Elastica'
+            }),
+            'species': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition duration-200',
+                'placeholder': 'Ex: Ficus elastica'
+            }),
+            'category': forms.Select(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white cursor-pointer'
+            }),
+            'image': forms.FileInput(attrs={
+                'class': 'block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 cursor-pointer'
+            }),
         }
 
 class MeasurementForm(forms.ModelForm):
@@ -16,6 +28,16 @@ class MeasurementForm(forms.ModelForm):
         model = PlantMeasurement
         fields = ['criterion', 'value', 'notes']
         widgets = {
-            'value': forms.NumberInput(attrs={'class': 'form-input'}),
-            'notes': forms.Textarea(attrs={'class': 'form-textarea', 'rows': 3}),
+            'criterion': forms.Select(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white'
+            }),
+            'value': forms.NumberInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent',
+                'placeholder': 'Valeur mesurée'
+            }),
+            'notes': forms.Textarea(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent',
+                'rows': 3,
+                'placeholder': 'Observations particulières...'
+            }),
         }

@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}Ajouter une plante - Paris Plantes{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-8">
+
+    <div class="mb-8 text-center">
+        <h1 class="text-3xl font-bold text-gray-800">Ajouter une nouvelle plante</h1>
+        <p class="text-gray-600 mt-2">Partagez votre plante avec la communauté</p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-md p-6 md:p-8">
+
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+            <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
+                <div class="flex">
+                    <div class="ml-3">
+                        <p class="text-sm text-red-700">
+                            {{ form.non_field_errors|striptags }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div>
+                <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    Nom de la plante
+                </label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                <p class="text-red-500 text-xs mt-1">{{ form.name.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <label for="{{ form.species.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    Espèce (scientifique ou commun)
+                </label>
+                {{ form.species }}
+                {% if form.species.errors %}
+                <p class="text-red-500 text-xs mt-1">{{ form.species.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <label for="{{ form.category.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    Catégorie
+                </label>
+                {{ form.category }}
+                {% if form.category.errors %}
+                <p class="text-red-500 text-xs mt-1">{{ form.category.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <label for="{{ form.image.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                    Photo de la plante
+                </label>
+                <div
+                    class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-green-500 transition-colors">
+                    <div class="space-y-1 text-center">
+                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
+                            viewBox="0 0 48 48" aria-hidden="true">
+                            <path
+                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <div class="text-sm text-gray-600">
+                            {{ form.image }}
+                        </div>
+                        <p class="text-xs text-gray-500">PNG, JPG, GIF jusqu'à 5MB</p>
+                    </div>
+                </div>
+                {% if form.image.errors %}
+                <p class="text-red-500 text-xs mt-1">{{ form.image.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="flex items-center justify-between pt-4">
+                <a href="{% url 'plant_list' %}"
+                    class="text-sm font-medium text-gray-600 hover:text-gray-900 transition duration-150">
+                    ← Retour à la liste
+                </a>
+                <button type="submit"
+                    class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg shadow transition duration-300 transform hover:-translate-y-0.5">
+                    Ajouter la plante
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -28,7 +28,7 @@ def plant_detail(request, pk):
     return render(request, 'plants/plant_detail.html', context)
 
 @login_required
-def plant_add(request):
+def add_plant(request):
     if request.method == 'POST':
         form = PlantForm(request.POST, request.FILES)
         if form.is_valid():
@@ -39,7 +39,7 @@ def plant_add(request):
             return redirect('plant_detail', pk=plant.pk)
     else:
         form = PlantForm()
-    return render(request, 'plants/plant_add.html', {'form': form})
+    return render(request, 'plants/add_plants.html', {'form': form})
 
 @login_required
 def add_measurement(request, plant_id):
