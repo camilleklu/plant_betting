@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-8">Les plantes en lice 🌱</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for plant in plants %}
+        <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300">
+            <div class="h-48 w-full bg-gray-200 relative">
+                {% if plant.image %}
+                <img src="{{ plant.image.url }}" alt="{{ plant.name }}" class="h-full w-full object-cover">
+                {% else %}
+                <div class="flex items-center justify-center h-full text-gray-400">Pas d'image</div>
+                {% endif %}
+                <span class="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                    {{ plant.days_alive }} jours
+                </span>
+            </div>
+
+            <div class="p-5">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800">{{ plant.name }}</h2>
+                        <p class="text-sm text-gray-500">{{ plant.species }}</p>
+                    </div>
+                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
+                        {{ plant.get_category_display }}
+                    </span>
+                </div>
+
+                <div class="mt-4 flex items-center justify-between">
+                    <div class="text-sm text-gray-600">
+                        <span class="block">Propriétaire:</span>
+                        <span class="font-medium text-gray-900">{{ plant.owner.username }}</span>
+                    </div>
+                    <a href="{% url 'plant_detail' plant.pk %}"
+                        class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                        {% if plant.owner == user %}Gérer{% else %}Parier{% endif %}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

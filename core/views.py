@@ -86,14 +86,9 @@ def profile(request):
     active_bets = Bet.objects.filter(user=request.user, is_resolved=False)
     past_bets = Bet.objects.filter(user=request.user, is_resolved=True)
 
-    # 3. Gestion des Plantes
-    # J'ai remis user=request.user car c'est le standard Django. 
-    # Si ton modèle plante utilise 'owner' ou 'author', change ce mot ci-dessous.
-    try:
-        user_plants = Plant.objects.filter(user=request.user)
-    except:
-        # Fallback au cas où le champ s'appelle autrement
-        user_plants = [] 
+    # 3. Gestion des Plantes (CORRECTION ICI)
+    # On utilise 'owner' car c'est le nom du champ dans ton models.py
+    user_plants = Plant.objects.filter(owner=request.user)
 
     # 4. Gestion du Formulaire de Profil
     if request.method == 'POST':
@@ -109,7 +104,7 @@ def profile(request):
         'user_score': user_score,
         'active_bets': active_bets,
         'past_bets': past_bets,
-        'user_plants': user_plants,
+        'user_plants': user_plants, # La variable contient maintenant les bonnes données
         'form': form,
     }
     return render(request, 'core/profile.html', context)
@@ -132,3 +127,23 @@ def change_password(request):
 
 def rules(request):
     return render(request, 'core/rules.html')
+
+
+@login_required
+def leaderboard(request):
+    """ PAGE 3 : Le classement """
+    # Les 50 meilleurs
+    leaders = UserScore.objects.select_related('user').order_by('-total_points')[:50]
+    
+    # Rang de l'utilisateur actuel
+    user_rank = 0
+    try:
+        current_score = UserScore.objects.get(user=request.user)
+        user_rank = UserScore.objects.filter(total_points__gt=current_score.total_points).count() + 1
+    except UserScore.DoesNotExist:
+        pass
+
+    return render(request, 'core/leaderboard.html', {
+        'leaders': leaders,
+        'user_rank': user_rank
+    })

@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-8">
+
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+        <div class="md:flex">
+            <div class="md:flex-shrink-0">
+                {% if plant.image %}
+                <img class="h-64 w-full object-cover md:w-64" src="{{ plant.image.url }}" alt="{{ plant.name }}">
+                {% else %}
+                <div class="h-64 w-full md:w-64 bg-gray-200 flex items-center justify-center">No image</div>
+                {% endif %}
+            </div>
+            <div class="p-8 w-full">
+                <div class="uppercase tracking-wide text-sm text-green-500 font-semibold">{{ plant.get_category_display
+                    }}</div>
+                <h1 class="mt-1 text-4xl font-bold text-gray-900 leading-tight">{{ plant.name }}</h1>
+                <p class="mt-2 text-gray-600">Espèce : {{ plant.species }}</p>
+                <div class="mt-4 flex items-center">
+                    <div class="text-3xl font-bold text-gray-800 mr-2">{{ plant.days_alive }}</div>
+                    <span class="text-gray-500">jours de survie</span>
+                </div>
+
+                {% if not plant.is_active %}
+                <div class="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                    Cette plante est décédée le {{ plant.death_date|date:"d/m/Y" }}.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <div class="lg:col-span-2 space-y-8">
+
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Carnet de santé</h2>
+                {% if measurements %}
+                <div class="space-y-4">
+                    {% for measure in measurements %}
+                    <div class="flex items-start border-b border-gray-100 pb-4">
+                        <div class="bg-green-100 p-2 rounded-full mr-4">
+                            📝
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-800">{{ measure.criterion.name }}</p>
+                            <p class="text-gray-600">Valeur : {{ measure.value }} {{ measure.criterion.unit }}</p>
+                            {% if measure.notes %}
+                            <p class="text-sm text-gray-500 italic mt-1">"{{ measure.notes }}"</p>
+                            {% endif %}
+                            <p class="text-xs text-gray-400 mt-1">{{ measure.measured_at|timesince }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-gray-500 italic">Aucune donnée enregistrée pour le moment.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="space-y-6">
+
+            {% if is_owner %}
+            <div class="bg-blue-50 rounded-xl shadow-md p-6 border border-blue-200">
+                <h2 class="text-xl font-bold text-blue-900 mb-4">👑 Espace Propriétaire</h2>
+
+                <div class="mb-8">
+                    <h3 class="font-semibold text-blue-800 mb-2">Ajouter une mesure</h3>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="add_measurement" value="1">
+                        <div class="space-y-3">
+                            {{ measurement_form.as_p }}
+                            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+                                Enregistrer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <hr class="border-blue-200 my-6">
+
+                {% if plant.is_active %}
+                <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+                    <h3 class="font-bold text-red-700 mb-2">Zone de danger</h3>
+                    <p class="text-sm text-red-600 mb-4">Si la plante est morte, signalez-le ici pour clôturer les
+                        paris.</p>
+                    <form method="post" onsubmit="return confirm('Êtes-vous sûr ? Cette action est irréversible.');">
+                        {% csrf_token %}
+                        <input type="hidden" name="declare_death" value="1">
+                        <button type="submit"
+                            class="w-full bg-red-600 text-white py-2 rounded font-bold hover:bg-red-700">
+                            💀 Déclarer la mort de la plante
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+
+            {% else %}
+            <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-green-500">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">🎰 Zone de Paris</h2>
+
+                {% if not plant.is_active %}
+                <p class="text-red-500 font-bold text-center">Les paris sont fermés (Plante morte).</p>
+
+                {% elif user_has_bet %}
+                <div class="bg-green-50 p-4 rounded text-center">
+                    <p class="text-green-700 font-bold text-lg">✅ Pari enregistré !</p>
+                    <p class="text-green-600 text-sm mt-1">Attendez le résultat...</p>
+                </div>
+
+                {% else %}
+                <p class="text-gray-600 mb-4 text-sm">Estimez la date de fin de vie de cette plante et misez vos points
+                    !</p>
+                <form method="post" class="space-y-4">
+                    {% csrf_token %}
+                    <input type="hidden" name="place_bet" value="1">
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Date estimée de mort</label>
+                        {{ bet_form.predicted_death_date }}
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Mise (Points)</label>
+                        {{ bet_form.wager_amount }}
+                    </div>
+
+                    <button type="submit"
+                        class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transform hover:-translate-y-1 transition">
+                        Placer mon pari
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+{% endblock %}
