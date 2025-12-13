@@ -3,11 +3,13 @@
 {% block title %}Mon Profil - Paris Plantes{% endblock %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto px-4 py-8">
+<div class="max-w-7xl mx-auto px-4 py-8">
     <h1 class="text-3xl font-bold text-gray-800 mb-8">Mon Profil</h1>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div class="lg:col-span-2 space-y-6">
+
+        <div class="lg:col-span-2 space-y-8">
+
             <div class="bg-white rounded-xl shadow-md p-6">
                 <h2 class="text-xl font-semibold mb-4 text-gray-800">Informations personnelles</h2>
                 <form method="post">
@@ -24,27 +26,22 @@
                     </div>
                     <button type="submit"
                         class="mt-4 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-300">
-                        Mettre à jour le profil
+                        Mettre à jour
                     </button>
                 </form>
-            </div>
 
-            <!-- Carte de changement de mot de passe -->
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <h2 class="text-xl font-semibold mb-4 text-gray-800">Sécurité</h2>
-                <a href="{% url 'change_password' %}"
-                    class="inline-block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300">
-                    Changer mon mot de passe
-                </a>
+                <div class="mt-6 pt-6 border-t border-gray-100">
+                    <a href="{% url 'change_password' %}" class="text-blue-500 hover:text-blue-700 text-sm font-medium">
+                        Changer mon mot de passe
+                    </a>
+                </div>
             </div>
 
             <div class="bg-white rounded-xl shadow-md p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-semibold text-gray-800">Mes plantes</h2>
-                    <a href="{% url 'add_plant' %}"
-                        class="text-green-600 hover:text-green-700 text-sm font-medium hover:underline">
-                        + Ajouter
-                    </a>
+                    <h2 class="text-xl font-semibold text-gray-800">Mes plantes ({{ user_plants.count }})</h2>
+                    <a href="{% url 'add_plant' %}" class="text-green-600 hover:text-green-700 text-sm font-medium">+
+                        Ajouter</a>
                 </div>
 
                 {% if user_plants %}
@@ -53,37 +50,23 @@
                     <a href="{% url 'plant_detail' plant.pk %}" class="block group">
                         <div
                             class="border border-gray-200 rounded-lg p-3 hover:border-green-500 hover:shadow-sm transition duration-200 flex items-center space-x-4">
-
                             <div class="flex-shrink-0 h-16 w-16 relative">
                                 {% if plant.image %}
-                                <img src="{{ plant.image.url }}" alt="{{ plant.name }}"
-                                    class="h-16 w-16 rounded-lg object-cover">
+                                <img src="{{ plant.image.url }}" class="h-16 w-16 rounded-lg object-cover">
                                 {% else %}
                                 <div
-                                    class="h-16 w-16 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400">
-                                    <span class="text-xs">No img</span>
-                                </div>
+                                    class="h-16 w-16 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400 text-xs">
+                                    No img</div>
                                 {% endif %}
-
                                 <span
                                     class="absolute -top-1 -right-1 h-3 w-3 rounded-full border-2 border-white {% if plant.is_active %}bg-green-500{% else %}bg-red-500{% endif %}"></span>
                             </div>
-
                             <div class="flex-1 min-w-0">
-                                <p
-                                    class="text-sm font-medium text-gray-900 truncate group-hover:text-green-600 transition">
-                                    {{ plant.name }}
-                                </p>
-                                <p class="text-xs text-gray-500 truncate">
-                                    {{ plant.species }}
-                                </p>
+                                <p class="text-sm font-medium text-gray-900 truncate group-hover:text-green-600">{{
+                                    plant.name }}</p>
+                                <p class="text-xs text-gray-500">{{ plant.species }}</p>
                                 <div class="mt-1 flex items-center text-xs text-gray-400">
-                                    <span class="bg-gray-100 px-2 py-0.5 rounded text-gray-600 text-[10px] mr-2">
-                                        {{ plant.get_category_display }}
-                                    </span>
-                                    <span>
-                                        ⏳ {{ plant.days_alive }}j
-                                    </span>
+                                    <span>⏳ {{ plant.days_alive }}j</span>
                                 </div>
                             </div>
                         </div>
@@ -91,66 +74,116 @@
                     {% endfor %}
                 </div>
                 {% else %}
-                <div class="text-center py-8">
-                    <div class="text-4xl mb-2">🌱</div>
-                    <p class="text-gray-500 mb-4">Vous n'avez pas encore ajouté de plantes.</p>
-                    <a href="{% url 'add_plant' %}"
-                        class="inline-block bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-300 text-sm font-medium">
-                        Ajouter ma première plante
-                    </a>
-                </div>
+                <p class="text-gray-500 text-sm italic">Vous n'avez pas encore ajouté de plantes.</p>
                 {% endif %}
             </div>
+
+            <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                <div class="p-6 border-b border-gray-100">
+                    <h2 class="text-xl font-semibold text-gray-800">Historique de mes paris</h2>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left font-medium text-gray-500">Plante</th>
+                                <th class="px-6 py-3 text-center font-medium text-gray-500">Date Prédite</th>
+                                <th class="px-6 py-3 text-center font-medium text-gray-500">Mise</th>
+                                <th class="px-6 py-3 text-center font-medium text-gray-500">Gain</th>
+                                <th class="px-6 py-3 text-center font-medium text-gray-500">Résultat</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            {% for bet in user_bets %}
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4">
+                                    <a href="{% url 'plant_detail' bet.plant.pk %}"
+                                        class="font-medium text-gray-900 hover:text-green-600">
+                                        {{ bet.plant.name }}
+                                    </a>
+                                </td>
+                                <td class="px-6 py-4 text-center text-gray-600">
+                                    {{ bet.predicted_death_date|date:"d/m/Y" }}
+                                </td>
+                                <td class="px-6 py-4 text-center font-bold text-gray-700">
+                                    -{{ bet.bet_amount }}
+                                </td>
+                                <td
+                                    class="px-6 py-4 text-center font-bold {% if bet.won %}text-green-600{% else %}text-gray-400{% endif %}">
+                                    {% if bet.won %}
+                                    +{{ bet.points_won }}
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    {% if not bet.is_resolved %}
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                        ⏳ En cours
+                                    </span>
+                                    {% elif bet.won %}
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        🏆 Gagné
+                                    </span>
+                                    {% else %}
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                        ❌ Perdu
+                                    </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="px-6 py-8 text-center text-gray-500 italic">
+                                    Aucun pari effectué pour le moment.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
 
-        <!-- Colonne de droite : Statistiques -->
         <div class="space-y-6">
-            <!-- Carte des statistiques -->
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <h2 class="text-xl font-semibold mb-4 text-gray-800">Mes Statistiques</h2>
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Points totaux</span>
-                        <span class="font-bold text-green-600">{{ user_score.total_points }}</span>
-                    </div>
-                    <div class="flex justify-between items-center">
+            <div class="bg-white rounded-xl shadow-md p-6 sticky top-8">
+                <h2 class="text-xl font-semibold mb-6 text-gray-800">Mes Statistiques</h2>
+
+                <div class="text-center mb-8 p-4 bg-green-50 rounded-xl border border-green-100">
+                    <p class="text-sm text-green-800 uppercase tracking-wide font-semibold">Solde actuel</p>
+                    <p class="text-4xl font-bold text-green-600 mt-1">{{ user_score.total_points }} <span
+                            class="text-lg">pts</span></p>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center border-b border-gray-100 pb-2">
                         <span class="text-gray-600">Classement</span>
-                        <span class="font-bold text-blue-600">#{{ user_score.rank }}</span>
+                        <span class="font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded">#{{ user_score.rank }}</span>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Paris gagnés</span>
+
+                    <div class="flex justify-between items-center border-b border-gray-100 pb-2">
+                        <span class="text-gray-600">Paris Gagnés</span>
                         <span class="font-bold text-green-600">{{ user_score.bets_won }}</span>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Paris perdus</span>
+
+                    <div class="flex justify-between items-center border-b border-gray-100 pb-2">
+                        <span class="text-gray-600">Paris Perdus</span>
                         <span class="font-bold text-red-600">{{ user_score.bets_lost }}</span>
                     </div>
-                    <div class="flex justify-between items-center">
+
+                    <div class="flex justify-between items-center pt-2">
                         <span class="text-gray-600">Taux de réussite</span>
                         <span class="font-bold text-purple-600">{{ user_score.accuracy_rate|floatformat:1 }}%</span>
                     </div>
                 </div>
             </div>
-
-            <!-- Carte des activités récentes -->
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <h2 class="text-xl font-semibold mb-4 text-gray-800">Mes Activités</h2>
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Plantes ajoutées</span>
-                        <span class="font-bold text-gray-800">{{ user_plants.count }}</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Paris en cours</span>
-                        <span class="font-bold text-yellow-600">{{ active_bets.count }}</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Paris terminés</span>
-                        <span class="font-bold text-gray-800">{{ past_bets.count }}</span>
-                    </div>
-                </div>
-            </div>
         </div>
+
     </div>
 </div>
 {% endblock %}

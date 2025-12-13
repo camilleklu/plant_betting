@@ -3,12 +3,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 
-# --- IMPORTS INTER-APPS (C'est la clé !) ---
-from .models import Plant, PlantMeasurement      # Modèles de l'app PLANTS
-from bets.models import Bet                      # Modèle de l'app BETS
-from leaderboard.models import UserScore         # Modèle de l'app LEADERBOARD
-from .forms import PlantForm, MeasurementForm    # Formulaires de l'app PLANTS
-from bets.forms import BetForm                   # Formulaire de l'app BETS
+# --- IMPORTS DES MODÈLES ---
+from .models import Plant, PlantMeasurement
+from bets.models import Bet
+from leaderboard.models import UserScore
+
+# --- IMPORTS DES FORMULAIRES ---
+from .forms import PlantForm, MeasurementForm
+from bets.forms import BetForm
 
 @login_required
 def plant_list(request):
@@ -18,13 +20,14 @@ def plant_list(request):
 
 @login_required
 def plant_detail(request, pk):
-    """ PAGE 2 : Détail avec Pari (si visiteur) OU Gestion (si proprio) """
+    """ PAGE 2 : Détail avec Logique Propriétaire (Gestion) vs Parieur (Jeu) """
     plant = get_object_or_404(Plant, pk=pk)
     is_owner = (plant.owner == request.user)
     
     # Récupération des données
     measurements = PlantMeasurement.objects.filter(plant=plant).order_by('-measured_at')
-    # On récupère (ou crée) le score du joueur pour savoir combien il peut miser
+    
+    # On récupère le score du visiteur actuel (pour le formulaire de pari)
     user_score, created = UserScore.objects.get_or_create(user=request.user)
 
     # Variables par défaut
@@ -32,9 +35,11 @@ def plant_detail(request, pk):
     bet_form = None
     user_has_bet = False
 
-    # === CAS A : C'est le PROPRIÉTAIRE ===
+    # =================================================
+    # === CAS A : C'EST LE PROPRIÉTAIRE (GESTION) ===
+    # =================================================
     if is_owner:
-        # Formulaire pour ajouter une mesure
+        # 1. Gestion de l'ajout de mesure
         if request.method == 'POST' and 'add_measurement' in request.POST:
             measurement_form = MeasurementForm(request.POST)
             if measurement_form.is_valid():
@@ -46,15 +51,34 @@ def plant_detail(request, pk):
         else:
             measurement_form = MeasurementForm()
             
-        # Bouton pour déclarer la mort
+        # 2. GESTION DE LA MORT (SIMPLIFIÉE GRÂCE À TON MODÈLE)
         if request.method == 'POST' and 'declare_death' in request.POST:
-            plant.death_date = timezone.now()
+            death_date = timezone.now()
+            
+            # A. Marquer la plante comme morte
+            plant.death_date = death_date
             plant.is_active = False
             plant.save()
-            messages.warning(request, 'Plante déclarée morte. Paris clos.')
+            
+            # B. Résoudre les paris en attente
+            active_bets = Bet.objects.filter(plant=plant, is_resolved=False)
+            count_winners = 0
+            
+            for bet in active_bets:
+                # APPEL DE TA MÉTHODE DU MODÈLE BET
+                # C'est elle qui calcule les points et met à jour le UserScore
+                bet.resolve_bet()
+                
+                # On vérifie juste le résultat pour l'affichage du message
+                if bet.won:
+                    count_winners += 1
+            
+            messages.warning(request, f'Plante déclarée morte. {count_winners} pari(s) gagnant(s) ont été payés !')
             return redirect('plant_detail', pk=pk)
 
-    # === CAS B : C'est un PARIEUR (visiteur) ===
+    # =================================================
+    # === CAS B : C'EST UN PARIEUR (VISITEUR) ===
+    # =================================================
     else:
         user_has_bet = Bet.objects.filter(user=request.user, plant=plant).exists()
         
@@ -64,21 +88,24 @@ def plant_detail(request, pk):
             
             if bet_form.is_valid():
                 amount = bet_form.cleaned_data['bet_amount']
+                
+                # Vérification ultime du solde
                 if user_score.total_points >= amount:
-                    # Création du pari
                     bet = bet_form.save(commit=False)
                     bet.user = request.user
                     bet.plant = plant
                     bet.save()
                     
-                    # Retrait des points
+                    # Débit immédiat de la mise
                     user_score.total_points -= amount
                     user_score.save()
                     
-                    messages.success(request, 'Pari validé !')
+                    messages.success(request, 'Pari validé ! Bonne chance 🍀')
                     return redirect('plant_detail', pk=pk)
                 else:
                     messages.error(request, 'Pas assez de points !')
+            else:
+                messages.error(request, 'Erreur dans le formulaire.')
         else:
             bet_form = BetForm(user_points=user_score.total_points)
 
@@ -103,7 +130,7 @@ def add_plant(request):
             plant = form.save(commit=False)
             plant.owner = request.user
             plant.save()
-            messages.success(request, 'Plante ajoutée !')
+            messages.success(request, 'Plante ajoutée avec succès !')
             return redirect('plant_detail', pk=plant.pk)
     else:
         form = PlantForm()
@@ -111,10 +138,10 @@ def add_plant(request):
 
 @login_required
 def add_measurement(request, plant_id):
-    """
-    Vue alternative pour ajouter une mesure (si on ne passe pas par le détail)
-    """
+    """ Vue alternative pour ajouter une mesure """
     plant = get_object_or_404(Plant, pk=plant_id)
+    
+    # Sécurité : seul le propriétaire peut ajouter des mesures
     if plant.owner != request.user:
         messages.error(request, "Vous n'êtes pas le propriétaire.")
         return redirect('plant_detail', pk=plant_id)

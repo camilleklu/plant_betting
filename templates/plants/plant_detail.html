@@ -114,11 +114,16 @@
                 </div>
 
                 {% else %}
-                <p class="text-gray-600 mb-4 text-sm">Estimez la date de fin de vie de cette plante et misez vos points
-                    !</p>
                 <form method="post" class="space-y-4">
                     {% csrf_token %}
+
                     <input type="hidden" name="place_bet" value="1">
+
+                    {% if bet_form.errors %}
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                        {{ bet_form.errors }}
+                    </div>
+                    {% endif %}
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Date estimée de mort</label>
@@ -127,7 +132,7 @@
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Mise (Points)</label>
-                        {{ bet_form.wager_amount }}
+                        {{ bet_form.bet_amount }}
                     </div>
 
                     <button type="submit"

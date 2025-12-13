@@ -4,15 +4,18 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
-from django.contrib.auth.models import User # <-- Nécessaire pour chercher l'email
+from django.contrib.auth.models import User
 
-# Imports de tes modèles
+# Imports des modèles externes
 from plants.models import Plant
 from bets.models import Bet
 from leaderboard.models import UserScore
 
-# Imports de tes formulaires
-# Assure-toi d'importer le bon formulaire ici (CustomAuthenticationForm)
+# Imports des modèles locaux (CORE)
+# IMPORTANT : On doit importer UserProfile pour l'afficher
+from .models import UserProfile 
+
+# Imports des formulaires
 from .forms import CustomUserCreationForm, ProfileUpdateForm, CustomAuthenticationForm
 
 def home(request):
@@ -39,7 +42,6 @@ def register(request):
         form = CustomUserCreationForm()
     return render(request, 'core/register.html', {'form': form})
 
-# --- NOUVELLE LOGIQUE DE CONNEXION ---
 def login_view(request):
     if request.method == 'POST':
         form = CustomAuthenticationForm(data=request.POST)
@@ -47,16 +49,15 @@ def login_view(request):
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
             
-            # 1. On cherche d'abord s'il existe un utilisateur avec cet email
+            # 1. Connexion par Email
             try:
                 user_obj = User.objects.get(email=email)
-                # 2. Si oui, on récupère son username pour l'authentification Django standard
+                # 2. Authentification via username (mécanisme interne Django)
                 user = authenticate(username=user_obj.username, password=password)
                 
                 if user is not None:
                     login(request, user)
                     messages.success(request, f'Ravi de vous revoir, {user.username} !')
-                    # Gestion de la redirection "next" (si l'utilisateur venait d'une page protégée)
                     next_url = request.POST.get('next') or request.GET.get('next')
                     return redirect(next_url if next_url else 'home')
                 else:
@@ -76,23 +77,25 @@ def logout_view(request):
 
 @login_required
 def profile(request):
-    # 1. Gestion des Scores
-    try:
-        user_score = UserScore.objects.get(user=request.user)
-    except UserScore.DoesNotExist:
-        user_score = UserScore.objects.create(user=request.user)
+    # 1. Scores
+    user_score, created = UserScore.objects.get_or_create(user=request.user)
+
+    # 2. Profil
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
     
-    # 2. Gestion des Paris
+    # 3. Paris
     active_bets = Bet.objects.filter(user=request.user, is_resolved=False)
     past_bets = Bet.objects.filter(user=request.user, is_resolved=True)
+    
+    # CORRECTION ICI : On utilise '-bet_date' au lieu de '-created_at'
+    user_bets = Bet.objects.filter(user=request.user).select_related('plant').order_by('-bet_date')
 
-    # 3. Gestion des Plantes (CORRECTION ICI)
-    # On utilise 'owner' car c'est le nom du champ dans ton models.py
+    # 4. Plantes
     user_plants = Plant.objects.filter(owner=request.user)
 
-    # 4. Gestion du Formulaire de Profil
+    # 5. Formulaire
     if request.method == 'POST':
-        form = ProfileUpdateForm(request.POST, instance=request.user)
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
             messages.success(request, 'Votre profil a été mis à jour !')
@@ -102,9 +105,11 @@ def profile(request):
     
     context = {
         'user_score': user_score,
+        'user_profile': user_profile,
         'active_bets': active_bets,
         'past_bets': past_bets,
-        'user_plants': user_plants, # La variable contient maintenant les bonnes données
+        'user_bets': user_bets,
+        'user_plants': user_plants,
         'form': form,
     }
     return render(request, 'core/profile.html', context)
@@ -125,17 +130,11 @@ def change_password(request):
     
     return render(request, 'core/change_password.html', {'form': form})
 
-def rules(request):
-    return render(request, 'core/rules.html')
-
-
 @login_required
 def leaderboard(request):
     """ PAGE 3 : Le classement """
-    # Les 50 meilleurs
     leaders = UserScore.objects.select_related('user').order_by('-total_points')[:50]
     
-    # Rang de l'utilisateur actuel
     user_rank = 0
     try:
         current_score = UserScore.objects.get(user=request.user)
@@ -147,3 +146,6 @@ def leaderboard(request):
         'leaders': leaders,
         'user_rank': user_rank
     })
+
+def rules(request):
+    return render(request, 'core/rules.html')
