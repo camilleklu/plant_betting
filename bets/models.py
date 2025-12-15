@@ -18,22 +18,36 @@ class Bet(models.Model):
     
     def calculate_points(self):
         """Calcule les points gagnés lorsque la plante meurt"""
+        # Sécurité : On s'assure d'avoir la version la plus récente de la plante
+        self.plant.refresh_from_db()
+        
         if not self.plant.death_date:
             return 0
             
-        days_diff = abs((self.predicted_death_date - self.plant.death_date).days)
+        # On compare les DATES (jours) uniquement, on ignore les heures/minutes
+        # Cela évite les bugs de fuseaux horaires
+        real_date = self.plant.death_date.date()
+        pred_date = self.predicted_death_date.date()
         
-        if days_diff < 1:
+        days_diff = abs((pred_date - real_date).days)
+        
+        if days_diff == 0:
+            # Jour exact : x5
             return int(self.bet_amount * 5)
         elif days_diff <= 3:
+            # Proche : x3
             return int(self.bet_amount * 3)
         elif days_diff <= 7:
+            # Pas loin : x1.5
             return int(self.bet_amount * 1.5)
         else:
             return 0
     
     def resolve_bet(self):
         """Résout le pari lorsque la plante meurt"""
+        # IMPORTANT : On rafraîchit les données pour être sûr de voir la mort
+        self.plant.refresh_from_db()
+
         if self.plant.death_date and not self.is_resolved:
             self.points_won = self.calculate_points()
             self.won = self.points_won > 0

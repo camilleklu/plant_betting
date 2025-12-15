@@ -21,7 +21,13 @@ from .forms import CustomUserCreationForm, ProfileUpdateForm, CustomAuthenticati
 def home(request):
     active_plants = Plant.objects.filter(is_active=True).order_by('-created_at')[:6]
     total_plants = Plant.objects.count()
-    active_bets = Bet.objects.filter(is_resolved=False).count()
+    
+    # CORRECTION : On compte uniquement les paris actifs de L'UTILISATEUR connecté
+    # Si l'utilisateur n'est pas connecté, on met 0
+    if request.user.is_authenticated:
+        active_bets = Bet.objects.filter(user=request.user, is_resolved=False).count()
+    else:
+        active_bets = 0
     
     context = {
         'active_plants': active_plants,
