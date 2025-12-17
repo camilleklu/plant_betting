@@ -1,91 +1,374 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="bg-gradient-to-r from-green-500 to-green-600 text-white py-20">
-    <div class="max-w-7xl mx-auto px-4 text-center">
-        <h1 class="text-5xl font-bold mb-6">Paris sur la Mort des Plantes</h1>
-        <p class="text-xl mb-8">Pariez sur la durée de vie des plantes et montez dans le classement!</p>
+<!-- Hero Section avec dégradé amélioré -->
+<section class="relative bg-gradient-to-br from-emerald-500 via-green-500 to-emerald-600 text-white py-20 md:py-28 overflow-hidden">
+    <!-- Effets décoratifs -->
+    <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute -top-20 -right-20 w-64 h-64 bg-emerald-400 rounded-full opacity-20 blur-3xl"></div>
+        <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-green-400 rounded-full opacity-20 blur-3xl"></div>
+    </div>
+    
+    <div class="max-w-7xl mx-auto px-4 text-center relative z-10">
+        <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+            Paris sur la 
+            <span class="bg-gradient-to-r from-yellow-300 to-amber-400 bg-clip-text text-transparent">
+                Mort des Plantes
+            </span>
+        </h1>
+        <p class="text-xl md:text-2xl mb-10 text-emerald-100 max-w-3xl mx-auto">
+            Pariez sur la durée de vie des plantes, prouvez votre intuition verte 
+            et montez dans le classement !
+        </p>
 
         {% if not user.is_authenticated %}
-        <div class="space-x-4">
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="{% url 'register' %}"
-                class="bg-white text-green-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100">
-                Commencer à parier
+                class="group relative px-8 py-4 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 rounded-xl font-semibold text-lg shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-1">
+                <span class="relative z-10 flex items-center justify-center gap-3">
+                    🎯 Commencer à parier
+                    <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform duration-300"></i>
+                </span>
+                <div class="absolute inset-0 bg-gradient-to-r from-emerald-600 to-green-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
+            </a>
+            
+            <a href="{% url 'rules' %}"
+                class="group px-8 py-4 border-2 border-white/50 hover:border-white rounded-xl font-semibold text-lg hover:bg-white/10 transition-all duration-300 backdrop-blur-sm">
+                <span class="flex items-center justify-center gap-3">
+                    📖 Voir les règles
+                    <i class="fas fa-book-open group-hover:rotate-12 transition-transform duration-300"></i>
+                </span>
             </a>
         </div>
         {% else %}
-        <div class="space-x-4">
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="{% url 'plant_list' %}"
-                class="bg-white text-green-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100">
-                Voir les plantes
+                class="group relative px-8 py-4 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 rounded-xl font-semibold text-lg shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-1">
+                <span class="relative z-10 flex items-center justify-center gap-3">
+                    🌿 Voir les plantes
+                    <i class="fas fa-seedling group-hover:rotate-180 transition-transform duration-300"></i>
+                </span>
+                <div class="absolute inset-0 bg-gradient-to-r from-emerald-600 to-green-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
             </a>
+            
             <a href="{% url 'add_plant' %}"
-                class="border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-green-600">
-                Ajouter une plante
+                class="group px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transition-all duration-300">
+                <span class="flex items-center justify-center gap-3">
+                    ➕ Ajouter une plante
+                    <i class="fas fa-plus group-hover:rotate-90 transition-transform duration-300"></i>
+                </span>
             </a>
         </div>
         {% endif %}
     </div>
 </section>
 
-<!-- Statistiques -->
-<section class="py-12 bg-white">
-    <h1>Règle de Paris Plantes</h1>
-    <h2>Création et Participation aux paris</h2>
-    <ul>
-        <li>Unique le propriétaire de la plante peut créer un pari sur sa plante</li>
-        <li>Interdiction de parier sur sa propre plante</li>
-        <li>La plante une fois en ligne reste pour une durée de 15 à 30 jours</li>
-        <li>Une photo de la plante est obligatoire</li>
-    </ul>
-    <h2>Système de mises et de gains</h2>
-    <h3>Montants des paris :</h3>
-    <ul>
-        <li>Minimum : 10 points</li>
-        <li>Maximum : 500 points</li>
-        <li>Pas de limite quotidienne</li>
-    </ul>
-    <h3>Calcul des gains :</h3>
-    <ul>
-        <li>Précision parfaite (le bon jour) → Mise x 5</li>
-        <li>Précision excellente (±1 à 3 jours) → Mise x 3</li>
-        <li>Précision excellente (±4 à 7 jours) → Mise x 1.5</li>
-        <li>Pari incorrect → Perte de toute la mise</li>
-    </ul>
-    <h2>Economie du jeu</h2>
-    <h3>Gains :</h3>
-    <ul>
-        <li>Recevez votre mise + multiplicateur selon la précision</li>
-        <li>Exemple: Mise de 100 points x 5 = 500 points gagnés</li>
-    </ul>
-    <h3>Pertes :</h3>
-    <ul>
-        <li>Pari incorrect = perte totale des points misés</li>
-        <li>Pas de remboursement des points misés</li>
-    </ul>
-    <h2>Classement</h2>
-    <ul>
-        <li>Basé sur le total des points accumulés</li>
-        <li>Les points utilisés sur un paris en cour ne sont pas pris en compte dans le compte total des points de
-            l'utilisateur</li>
-        <li>Pas d'autre classement</li>
-    </ul>
-    <h2>Transparence et équité</h2>
-    <ul>
-        <li>Le journal de soin est partagé</li>
-        <li>Signalement de comportement suspect</li>
-    </ul>
-    <h2>Stratégie recommandée</h2>
-    <h3>Pour des petits paris :</h3>
-    <ul>
-        <li>Gain maximum : 100 x 5 points</li>
-        <li>Risque limité : perte max de 100 points</li>
-    </ul>
-    <h3>Pour des gros paris :</h3>
-    <ul>
-        <li>Gain maximum : 500 x 5 = 2500 points</li>
-        <li>Risque élevé : perte max de 500 points</li>
-    </ul>
+<!-- Règles du jeu -->
+<section class="py-16 bg-gradient-to-b from-emerald-50 to-green-50">
+    <div class="max-w-7xl mx-auto px-4">
+        <!-- Titre principal -->
+        <h1 class="text-4xl md:text-5xl font-bold text-center text-emerald-900 mb-12 relative">
+            Règles de Paris Plantes
+            <div class="absolute mt-2 left-1/2 transform -translate-x-1/2 w-24 h-1.5 bg-emerald-500 rounded-full mt-4"></div>
+        </h1>
+
+        <!-- Conteneur des cartes -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <!-- Carte 1: Création et Participation -->
+            <div class="bg-white rounded-2xl shadow-xl p-6 border border-emerald-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                        <span class="text-2xl">🌱</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-emerald-800">Création et Participation</h2>
+                </div>
+                <ul class="space-y-4">
+                    <li class="flex items-start gap-3 p-3 bg-red-50 rounded-lg border-l-4 border-red-500">
+                        <span class="text-xl mt-0.5">⚠️</span>
+                        <div>
+                            <span class="font-semibold text-red-700">Seul le propriétaire</span> peut créer un pari sur sa plante
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3 p-3 bg-amber-50 rounded-lg border-l-4 border-amber-500">
+                        <span class="text-xl mt-0.5">🚫</span>
+                        <div>
+                            <span class="font-semibold text-amber-700">Interdiction</span> de parier sur sa propre plante
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3 p-3 bg-emerald-50 rounded-lg">
+                        <span class="text-xl mt-0.5">📅</span>
+                        <div>
+                            Durée : <span class="font-semibold text-emerald-700">15 à 30 jours</span>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3 p-3 bg-emerald-50 rounded-lg">
+                        <span class="text-xl mt-0.5">📸</span>
+                        <div>
+                            <span class="font-semibold text-emerald-700">Photo obligatoire</span> de la plante
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Carte 2: Système de mises -->
+            <div class="bg-white rounded-2xl shadow-xl p-6 border border-emerald-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+                        <span class="text-2xl">💰</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-emerald-800">Système de mises</h2>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-emerald-700 mb-3 pl-3 border-l-4 border-amber-500">Montants des paris :</h3>
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <div class="bg-amber-50 p-3 rounded-lg text-center">
+                            <div class="text-sm text-amber-600">Minimum</div>
+                            <div class="text-xl font-bold text-amber-700">10 points</div>
+                        </div>
+                        <div class="bg-emerald-50 p-3 rounded-lg text-center">
+                            <div class="text-sm text-emerald-600">Maximum</div>
+                            <div class="text-xl font-bold text-emerald-700">500 points</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 italic text-sm">✓ Pas de limite quotidienne</p>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-emerald-700 mb-3 pl-3 border-l-4 border-emerald-500">Calcul des gains :</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center p-3 bg-gradient-to-r from-emerald-50 to-green-50 rounded-lg">
+                            <span class="font-medium text-emerald-700">Précision parfaite</span>
+                            <span class="bg-emerald-500 text-white px-3 py-1 rounded-full text-sm font-bold">x5</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-emerald-50 rounded-lg">
+                            <span class="font-medium text-emerald-700">±1 à 3 jours</span>
+                            <span class="bg-emerald-400 text-white px-3 py-1 rounded-full text-sm font-bold">x3</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-emerald-50 rounded-lg">
+                            <span class="font-medium text-emerald-700">±4 à 7 jours</span>
+                            <span class="bg-emerald-300 text-white px-3 py-1 rounded-full text-sm font-bold">x1.5</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carte 3: Économie du jeu -->
+            <div class="bg-white rounded-2xl shadow-xl p-6 border border-emerald-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <span class="text-2xl">📈</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-emerald-800">Économie du jeu</h2>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-emerald-700 mb-3">🎯 Gains</h3>
+                    <div class="bg-gradient-to-r from-emerald-50 to-blue-50 p-4 rounded-xl mb-4">
+                        <p class="text-emerald-800 mb-2">Vous recevez : <span class="font-bold">Mise + multiplicateur</span></p>
+                        <div class="bg-white p-3 rounded-lg border border-emerald-200">
+                            <p class="text-center font-bold text-emerald-700">
+                                Exemple : 100 points × 5 = <span class="text-green-600">500 points gagnés</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-red-700 mb-3">⚠️ Pertes</h3>
+                    <div class="bg-gradient-to-r from-red-50 to-orange-50 p-4 rounded-xl">
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="text-2xl">💥</span>
+                            <p class="font-bold text-red-700">Pari incorrect = perte totale</p>
+                        </div>
+                        <p class="text-red-600 text-sm">× Aucun remboursement des points misés</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carte 4: Classement -->
+            <div class="bg-white rounded-2xl shadow-xl p-6 border border-emerald-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <span class="text-2xl">🏆</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-emerald-800">Classement</h2>
+                </div>
+                
+                <ul class="space-y-4">
+                    <li class="flex items-start gap-3 p-3 bg-gradient-to-r from-yellow-50 to-amber-50 rounded-lg">
+                        <span class="text-2xl">📊</span>
+                        <div>
+                            <p class="font-semibold text-amber-800">Basé sur le total des points</p>
+                            <p class="text-sm text-amber-600">Classement en temps réel</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3 p-3 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                        <span class="text-2xl">💡</span>
+                        <div>
+                            <p class="font-semibold text-blue-700">Points en jeu exclus</p>
+                            <p class="text-sm text-blue-600">Seuls les points disponibles comptent</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3 p-3 bg-emerald-50 rounded-lg">
+                        <span class="text-2xl">🔄</span>
+                        <div>
+                            <p class="font-semibold text-emerald-700">Mises à jour quotidiennes</p>
+                            <p class="text-sm text-emerald-600">Position recalculée chaque jour</p>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="mt-6 p-4 bg-gradient-to-r from-amber-100 to-yellow-100 rounded-xl">
+                    <p class="text-center font-bold text-amber-800">
+                        Montez dans le classement et devenez le meilleur parieur !
+                    </p>
+                </div>
+            </div>
+
+            <!-- Carte 5: Transparence -->
+            <div class="bg-white rounded-2xl shadow-xl p-6 border border-emerald-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <span class="text-2xl">🔍</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-emerald-800">Transparence & Équité</h2>
+                </div>
+
+                <ul class="space-y-4">
+                    <li class="flex items-start gap-3 p-3 bg-purple-50 rounded-lg">
+                        <span class="text-2xl">📖</span>
+                        <div>
+                            <p class="font-semibold text-purple-700">Journal de soin public</p>
+                            <p class="text-sm text-purple-600">Accès complet à l'historique</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3 p-3 bg-orange-50 rounded-lg border-l-4 border-orange-500">
+                        <span class="text-2xl">🚨</span>
+                        <div>
+                            <p class="font-semibold text-orange-700">Signalement des abus</p>
+                            <p class="text-sm text-orange-600">Comportement suspect ? Signalez-le !</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3 p-3 bg-emerald-50 rounded-lg">
+                        <span class="text-2xl">✅</span>
+                        <div>
+                            <p class="font-semibold text-emerald-700">Vérification des photos</p>
+                            <p class="text-sm text-emerald-600">Authenticité garantie</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
+                        <span class="text-2xl">📊</span>
+                        <div>
+                            <p class="font-semibold text-blue-700">Historique complet</p>
+                            <p class="text-sm text-blue-600">Tous les paris archivés</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Carte 6: Stratégie -->
+            <div class="bg-white rounded-2xl shadow-xl p-6 border border-emerald-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 lg:col-span-2">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-rose-100 rounded-lg flex items-center justify-center">
+                        <span class="text-2xl">🎯</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-emerald-800">Stratégies recommandées</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Stratégie petits paris -->
+                    <div class="bg-gradient-to-br from-emerald-50 to-green-50 p-5 rounded-xl border border-emerald-200">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
+                                <span class="text-lg">🛡️</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-emerald-800">Petits Paris</h3>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center p-3 bg-white rounded-lg">
+                                <span class="font-medium text-emerald-700">Gain maximum</span>
+                                <span class="bg-emerald-500 text-white px-3 py-1 rounded-full font-bold">
+                                    500 pts
+                                </span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-white rounded-lg">
+                                <span class="font-medium text-emerald-700">Risque maximum</span>
+                                <span class="bg-emerald-300 text-emerald-800 px-3 py-1 rounded-full font-bold">
+                                    100 pts
+                                </span>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-sm text-emerald-600 italic">
+                            Parfait pour débuter ou tester des stratégies
+                        </p>
+                    </div>
+
+                    <!-- Stratégie gros paris -->
+                    <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-5 rounded-xl border border-amber-200">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
+                                <span class="text-lg">⚡</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-amber-800">Gros Paris</h3>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center p-3 bg-white rounded-lg">
+                                <span class="font-medium text-amber-700">Gain maximum</span>
+                                <span class="bg-amber-500 text-white px-3 py-1 rounded-full font-bold">
+                                    2 500 pts
+                                </span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-white rounded-lg">
+                                <span class="font-medium text-amber-700">Risque maximum</span>
+                                <span class="bg-amber-300 text-amber-800 px-3 py-1 rounded-full font-bold">
+                                    500 pts
+                                </span>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-sm text-amber-600 italic">
+                            Pour les parieurs expérimentés et audacieux
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Conseil stratégique -->
+                <div class="mt-6 p-5 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl text-blue-600">💡</span>
+                        <div>
+                            <h4 class="font-bold text-blue-800 mb-2">Astuce Pro</h4>
+                            <p class="text-blue-700">
+                                Étudiez attentivement le <span class="font-semibold">journal de soin</span> 
+                                et l'historique de la plante avant de miser. 
+                                La connaissance est votre meilleur atout !
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA final -->
+        <div class="mt-12 text-center">
+            <div class="inline-block bg-gradient-to-r from-emerald-500 to-green-600 text-white px-8 py-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+                <p class="text-2xl font-bold mb-2">Prêt à commencer ?</p>
+                <p class="text-emerald-100 text-lg">Rejoignez l'aventure et montrez vos compétences !</p>
+                
+                {% if not user.is_authenticated %}
+                <a href="{% url 'register' %}" 
+                   class="inline-block mt-4 px-6 py-3 bg-white text-emerald-700 font-bold rounded-lg hover:bg-gray-100 transition-colors duration-300">
+                    🎯 S'inscrire maintenant
+                </a>
+                {% else %}
+                <a href="{% url 'plant_list' %}" 
+                   class="inline-block mt-4 px-6 py-3 bg-white text-emerald-700 font-bold rounded-lg hover:bg-gray-100 transition-colors duration-300">
+                    🌿 Voir les plantes disponibles
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </section>
 {% endblock %}

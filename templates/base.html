@@ -6,28 +6,123 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Paris Plantes{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body class="bg-gray-50">
-    <!-- Navigation -->
-    <nav class="bg-green-600 text-white shadow-lg">
+    <!-- Navigation améliorée -->
+    <nav class="bg-gradient-to-r from-emerald-600 via-green-500 to-emerald-600 text-white shadow-xl sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex justify-between items-center py-4">
-                <a href="{% url 'home' %}" class="text-xl font-bold">🌱 Paris Plantes</a>
+                <!-- Logo et titre -->
+                <a href="{% url 'home' %}" class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center group-hover:bg-white/30 transition-all duration-300">
+                        <span class="text-2xl">🌱</span>
+                    </div>
+                    <div>
+                        <span class="text-xl font-bold tracking-tight">Paris Plantes</span>
+                        <p class="text-xs text-emerald-100 opacity-80">Pariez sur la vie végétale</p>
+                    </div>
+                </a>
 
-                <div class="flex items-center space-x-4">
+                <!-- Menu navigation -->
+                <div class="hidden md:flex items-center space-x-1">
                     {% if user.is_authenticated %}
-                    <a href="{% url 'plant_list' %}" class="hover:text-green-200">Plantes</a>
-                    <a href="{% url 'leaderboard' %}" class="hover:text-green-200">Classement</a>
-                    <a href="{% url 'profile' %}" class="hover:text-green-200">Profil</a>
-                    <a href="{% url 'logout' %}"
-                        class="bg-green-700 px-3 py-1 rounded hover:bg-green-800">Déconnexion</a>
+                    <a href="{% url 'plant_list' %}" 
+                       class="px-4 py-2 rounded-lg hover:bg-white/20 transition-all duration-300 flex items-center space-x-2 group">
+                        <i class="fas fa-leaf text-emerald-200"></i>
+                        <span>Plantes</span>
+                        <span class="group-hover:translate-x-1 transition-transform duration-300">→</span>
+                    </a>
+                    <a href="{% url 'leaderboard' %}" 
+                       class="px-4 py-2 rounded-lg hover:bg-white/20 transition-all duration-300 flex items-center space-x-2 group">
+                        <i class="fas fa-trophy text-yellow-300"></i>
+                        <span>Classement</span>
+                        <span class="group-hover:translate-x-1 transition-transform duration-300">→</span>
+                    </a>
+                    <a href="{% url 'profile' %}" 
+                       class="px-4 py-2 rounded-lg hover:bg-white/20 transition-all duration-300 flex items-center space-x-2 group">
+                        <i class="fas fa-user text-blue-300"></i>
+                        <span>Profil</span>
+                        <span class="group-hover:translate-x-1 transition-transform duration-300">→</span>
+                    </a>
+                    <!-- Bouton Déconnexion -->
+                    <div class="ml-2 relative group">
+                        <a href="{% url 'logout' %}"
+                           class="px-4 py-2 rounded-lg bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2 group">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Déconnexion</span>
+                            <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">👋</span>
+                        </a>
+                        <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 group-hover:w-16 h-0.5 bg-red-400 rounded-full transition-all duration-300"></div>
+                    </div>
                     {% else %}
-                    <a href="{% url 'login' %}" class="hover:text-green-200">Connexion</a>
-                    <a href="{% url 'register' %}"
-                        class="bg-green-700 px-3 py-1 rounded hover:bg-green-800">Inscription</a>
+                    <!-- Boutons pour non-connectés -->
+                    <div class="flex items-center space-x-4">
+                        <a href="{% url 'login' %}" 
+                           class="px-4 py-2 rounded-lg hover:bg-white/20 transition-all duration-300 flex items-center space-x-2 group">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Connexion</span>
+                            <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">🔑</span>
+                        </a>
+                        <div class="relative group">
+                            <a href="{% url 'register' %}"
+                               class="px-6 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2 group">
+                                <i class="fas fa-user-plus"></i>
+                                <span class="font-semibold">Inscription</span>
+                                <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">🎉</span>
+                            </a>
+                            <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 group-hover:w-20 h-0.5 bg-emerald-400 rounded-full transition-all duration-300"></div>
+                        </div>
+                    </div>
                     {% endif %}
                 </div>
+
+                <!-- Menu mobile -->
+                <button class="md:hidden text-2xl focus:outline-none" id="mobile-menu-button">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <!-- Menu mobile déroulant -->
+            <div class="md:hidden hidden bg-emerald-700 rounded-lg mt-2 p-4" id="mobile-menu">
+                {% if user.is_authenticated %}
+                <div class="space-y-2">
+                    <a href="{% url 'plant_list' %}" 
+                       class="block px-4 py-3 rounded-lg hover:bg-emerald-600 transition-all duration-300 flex items-center space-x-3">
+                        <i class="fas fa-leaf w-6 text-center"></i>
+                        <span>Plantes</span>
+                    </a>
+                    <a href="{% url 'leaderboard' %}" 
+                       class="block px-4 py-3 rounded-lg hover:bg-emerald-600 transition-all duration-300 flex items-center space-x-3">
+                        <i class="fas fa-trophy w-6 text-center"></i>
+                        <span>Classement</span>
+                    </a>
+                    <a href="{% url 'profile' %}" 
+                       class="block px-4 py-3 rounded-lg hover:bg-emerald-600 transition-all duration-300 flex items-center space-x-3">
+                        <i class="fas fa-user w-6 text-center"></i>
+                        <span>Profil</span>
+                    </a>
+                    <a href="{% url 'logout' %}"
+                       class="block px-4 py-3 rounded-lg bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 transition-all duration-300 text-center font-semibold mt-4">
+                        <i class="fas fa-sign-out-alt mr-2"></i>
+                        Déconnexion
+                    </a>
+                </div>
+                {% else %}
+                <div class="space-y-2">
+                    <a href="{% url 'login' %}" 
+                       class="block px-4 py-3 rounded-lg hover:bg-emerald-600 transition-all duration-300 text-center">
+                        <i class="fas fa-sign-in-alt mr-2"></i>
+                        Connexion
+                    </a>
+                    <a href="{% url 'register' %}"
+                       class="block px-4 py-3 rounded-lg bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 transition-all duration-300 text-center font-semibold">
+                        <i class="fas fa-user-plus mr-2"></i>
+                        Inscription
+                    </a>
+                </div>
+                {% endif %}
             </div>
         </div>
     </nav>
@@ -38,16 +133,112 @@
         {% endblock %}
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-8 mt-12">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <p>&copy; 2024 Paris Plantes. Tous droits réservés.</p>
-            <div class="mt-4">
-                <a href="{% url 'rules' %}" class="text-gray-300 hover:text-white mx-2">Règles</a>
-                <a href="#" class="text-gray-300 hover:text-white mx-2">Contact</a>
+    <!-- Footer amélioré -->
+    <footer class="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Section Logo -->
+                <div class="text-center md:text-left">
+                    <div class="flex flex-col items-center md:items-start space-y-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg">
+                            <span class="text-3xl">🌱</span>
+                        </div>
+                        <h3 class="text-2xl font-bold">Paris Plantes</h3>
+                        <p class="text-gray-300">L'art du pari végétal</p>
+                    </div>
+                </div>
+
+                <!-- Section Liens -->
+                <div class="text-center">
+                    <h4 class="text-lg font-semibold mb-4 text-emerald-300">Navigation</h4>
+                    <div class="space-y-2">
+                        <a href="{% url 'home' %}" class="block hover:text-emerald-300 transition-colors duration-300">
+                            <i class="fas fa-home mr-2"></i>Accueil
+                        </a>
+                        <a href="{% url 'rules' %}" class="block hover:text-emerald-300 transition-colors duration-300">
+                            <i class="fas fa-book mr-2"></i>Règles du jeu
+                        </a>
+                        <a href="{% url 'leaderboard' %}" class="block hover:text-emerald-300 transition-colors duration-300">
+                            <i class="fas fa-trophy mr-2"></i>Classement
+                        </a>
+                        <a href="#" class="block hover:text-emerald-300 transition-colors duration-300">
+                            <i class="fas fa-envelope mr-2"></i>Contact
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Section Réseaux sociaux -->
+                <div class="text-center md:text-right">
+                    <h4 class="text-lg font-semibold mb-4 text-emerald-300">Suivez-nous</h4>
+                    <div class="flex justify-center md:justify-end space-x-4">
+                        <a href="#" class="w-10 h-10 bg-gray-700 hover:bg-emerald-600 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-700 hover:bg-emerald-600 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-700 hover:bg-emerald-600 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-gray-700 hover:bg-emerald-600 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                    </div>
+                    <p class="mt-4 text-gray-400 text-sm">
+                        Rejoignez notre communauté de passionnés !
+                    </p>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="mt-8 pt-8 border-t border-gray-700 text-center">
+                <p class="text-gray-400">
+                    &copy; 2024 Paris Plantes. Tous droits réservés.
+                    <span class="block text-sm mt-2 text-gray-500">
+                        Un projet 🌿 pour les amoureux des plantes et du jeu
+                    </span>
+                </p>
             </div>
         </div>
     </footer>
+
+    <!-- Script pour le menu mobile -->
+    <script>
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = this.querySelector('i');
+            
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                menu.classList.add('animate-slideDown');
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                menu.classList.add('hidden');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+
+        // Animation CSS pour le menu mobile
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            .animate-slideDown {
+                animation: slideDown 0.3s ease-out forwards;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 </body>
 
 </html>
