@@ -62,8 +62,7 @@
                                     class="absolute -top-1 -right-1 h-3 w-3 rounded-full border-2 border-white {% if plant.is_active %}bg-green-500{% else %}bg-red-500{% endif %}"></span>
                             </div>
                             <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-gray-900 truncate group-hover:text-green-600">{{
-                                    plant.name }}</p>
+                                <p class="text-sm font-medium text-gray-900 truncate group-hover:text-green-600">{{ plant.name }}</p>
                                 <p class="text-xs text-gray-500">{{ plant.species }}</p>
                                 <div class="mt-1 flex items-center text-xs text-gray-400">
                                     <span>⏳ {{ plant.days_alive }}j</span>

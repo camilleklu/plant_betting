@@ -1,5 +1,5 @@
 from django import forms
-from .models import Plant, PlantMeasurement
+from .models import Plant, PlantMeasurement, Criterion
 
 class PlantForm(forms.ModelForm):
     class Meta:
@@ -41,3 +41,7 @@ class MeasurementForm(forms.ModelForm):
                 'placeholder': 'Observations particulières...'
             }),
         }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['criterion'].queryset = Criterion.objects.filter(is_active=True)
