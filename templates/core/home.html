@@ -11,10 +11,7 @@
     
     <div class="max-w-7xl mx-auto px-4 text-center relative z-10">
         <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
-            Paris sur la 
-            <span class="bg-gradient-to-r from-yellow-300 to-amber-400 bg-clip-text text-transparent">
-                Mort des Plantes
-            </span>
+            Paris sur la Mort des Plantes
         </h1>
         <p class="text-xl md:text-2xl mb-10 text-emerald-100 max-w-3xl mx-auto">
             Pariez sur la durée de vie des plantes, prouvez votre intuition verte 
@@ -52,7 +49,7 @@
             </a>
             
             <a href="{% url 'add_plant' %}"
-                class="group px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transition-all duration-300">
+                class="group px-8 py-4 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transition-all duration-300">
                 <span class="flex items-center justify-center gap-3">
                     ➕ Ajouter une plante
                     <i class="fas fa-plus group-hover:rotate-90 transition-transform duration-300"></i>
@@ -62,7 +59,7 @@
         {% endif %}
         
         <!-- Statistiques rapides -->
-        <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+        <div class="mt-16 grid grid-cols-2 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
             <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 hover:scale-105 transition-transform duration-300">
                 <div class="text-3xl font-bold text-yellow-300 mb-2">🌱</div>
                 <div class="text-2xl font-bold mb-1">{{ total_plants|default:"0" }}</div>
@@ -72,16 +69,6 @@
                 <div class="text-3xl font-bold text-yellow-300 mb-2">💰</div>
                 <div class="text-2xl font-bold mb-1">{{ active_bets|default:"0" }}</div>
                 <div class="text-sm text-emerald-100">Paris actifs</div>
-            </div>
-            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 hover:scale-105 transition-transform duration-300">
-                <div class="text-3xl font-bold text-yellow-300 mb-2">👥</div>
-                <div class="text-2xl font-bold mb-1">{{ total_users|default:"0" }}</div>
-                <div class="text-sm text-emerald-100">Joueurs actifs</div>
-            </div>
-            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 hover:scale-105 transition-transform duration-300">
-                <div class="text-3xl font-bold text-yellow-300 mb-2">🏆</div>
-                <div class="text-2xl font-bold mb-1">x{{ multiplier|default:"3.2" }}</div>
-                <div class="text-sm text-emerald-100">Gains moyens</div>
             </div>
         </div>
     </div>

@@ -3,95 +3,378 @@
 {% block title %}Ajouter une plante - Paris Plantes{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto px-4 py-8">
-
-    <div class="mb-8 text-center">
-        <h1 class="text-3xl font-bold text-gray-800">Ajouter une nouvelle plante</h1>
-        <p class="text-gray-600 mt-2">Partagez votre plante avec la communauté</p>
-    </div>
-
-    <div class="bg-white rounded-xl shadow-md p-6 md:p-8">
-
-        <form method="post" enctype="multipart/form-data" class="space-y-6">
-            {% csrf_token %}
-
-            {% if form.non_field_errors %}
-            <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
-                <div class="flex">
-                    <div class="ml-3">
-                        <p class="text-sm text-red-700">
-                            {{ form.non_field_errors|striptags }}
-                        </p>
-                    </div>
-                </div>
+<section class="min-h-[calc(100vh-200px)] bg-gradient-to-b from-emerald-50 to-white py-12">
+    <div class="max-w-3xl mx-auto px-4">
+        <!-- En-tête -->
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-emerald-500 to-green-500 rounded-2xl shadow-xl mb-4">
+                <i class="fas fa-seedling text-white text-3xl"></i>
             </div>
-            {% endif %}
+            <h1 class="text-4xl font-bold text-emerald-900 mb-3">
+                Ajouter une nouvelle plante
+            </h1>
+            <p class="text-lg text-emerald-600 max-w-2xl mx-auto">
+                Partagez votre plante avec la communauté et laissez les autres parier sur sa durée de vie
+            </p>
+        </div>
 
-            <div>
-                <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
-                    Nom de la plante
-                </label>
-                {{ form.name }}
-                {% if form.name.errors %}
-                <p class="text-red-500 text-xs mt-1">{{ form.name.errors.0 }}</p>
-                {% endif %}
-            </div>
-
-            <div>
-                <label for="{{ form.species.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
-                    Espèce (scientifique ou commun)
-                </label>
-                {{ form.species }}
-                {% if form.species.errors %}
-                <p class="text-red-500 text-xs mt-1">{{ form.species.errors.0 }}</p>
-                {% endif %}
-            </div>
-
-            <div>
-                <label for="{{ form.category.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
-                    Catégorie
-                </label>
-                {{ form.category }}
-                {% if form.category.errors %}
-                <p class="text-red-500 text-xs mt-1">{{ form.category.errors.0 }}</p>
-                {% endif %}
-            </div>
-
-            <div>
-                <label for="{{ form.image.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
-                    Photo de la plante
-                </label>
-                <div
-                    class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-green-500 transition-colors">
-                    <div class="space-y-1 text-center">
-                        <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none"
-                            viewBox="0 0 48 48" aria-hidden="true">
-                            <path
-                                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                        <div class="text-sm text-gray-600">
-                            {{ form.image }}
+        <!-- Carte du formulaire -->
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-emerald-100 mb-8">
+            <!-- Barre de progression -->
+            <div class="bg-gradient-to-r from-emerald-600 to-green-600 text-white py-4 px-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                            <i class="fas fa-leaf"></i>
                         </div>
-                        <p class="text-xs text-gray-500">PNG, JPG, GIF jusqu'à 5MB</p>
+                        <div>
+                            <h2 class="font-bold text-lg">Formulaire d'ajout</h2>
+                            <p class="text-emerald-100 text-sm">Remplissez les informations ci-dessous</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold">🌱</div>
+                        <div class="text-xs text-emerald-200">Nouvelle plante</div>
                     </div>
                 </div>
-                {% if form.image.errors %}
-                <p class="text-red-500 text-xs mt-1">{{ form.image.errors.0 }}</p>
-                {% endif %}
             </div>
 
-            <div class="flex items-center justify-between pt-4">
-                <a href="{% url 'plant_list' %}"
-                    class="text-sm font-medium text-gray-600 hover:text-gray-900 transition duration-150">
-                    ← Retour à la liste
-                </a>
-                <button type="submit"
-                    class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg shadow transition duration-300 transform hover:-translate-y-0.5">
-                    Ajouter la plante
-                </button>
+            <!-- Formulaire -->
+            <div class="p-8">
+                {% if form.non_field_errors %}
+                <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-exclamation-triangle text-red-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-red-800 mb-1">Des erreurs ont été détectées :</h3>
+                            <p class="text-red-700 text-sm">
+                                {{ form.non_field_errors|striptags }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <form method="post" enctype="multipart/form-data" class="space-y-8">
+                    {% csrf_token %}
+
+                    <!-- Section 1: Informations de base -->
+                    <div>
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-info-circle text-emerald-600"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-emerald-800">Informations de base</h3>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Nom de la plante -->
+                            <div class="group">
+                                <label for="{{ form.name.id_for_label }}" 
+                                       class="block text-sm font-semibold text-emerald-700 mb-2 flex items-center gap-2">
+                                    <i class="fas fa-tag"></i>
+                                    Nom de la plante *
+                                </label>
+                                <div class="relative">
+                                    {{ form.name }}
+                                    
+                                </div>
+                                {% if form.name.errors %}
+                                <div class="mt-2 p-2 bg-red-50 border border-red-200 rounded-lg">
+                                    {% for error in form.name.errors %}
+                                    <p class="text-sm text-red-600 flex items-center gap-1">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        {{ error }}
+                                    </p>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Espèce -->
+                            <div class="group">
+                                <label for="{{ form.species.id_for_label }}" 
+                                       class="block text-sm font-semibold text-emerald-700 mb-2 flex items-center gap-2">
+                                    <i class="fas fa-dna"></i>
+                                    Espèce *
+                                </label>
+                                <div class="relative">
+                                    {{ form.species }}
+                                    
+                                </div>
+                                {% if form.species.errors %}
+                                <div class="mt-2 p-2 bg-red-50 border border-red-200 rounded-lg">
+                                    {% for error in form.species.errors %}
+                                    <p class="text-sm text-red-600 flex items-center gap-1">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        {{ error }}
+                                    </p>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Détails -->
+                    <div>
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-sliders-h text-emerald-600"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-emerald-800">Configuration du pari</h3>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Catégorie -->
+                            <div class="group">
+                                <label for="{{ form.category.id_for_label }}" 
+                                       class="block text-sm font-semibold text-emerald-700 mb-2 flex items-center gap-2">
+                                    <i class="fas fa-filter"></i>
+                                    Catégorie *
+                                </label>
+                                <div class="relative">
+                                    {{ form.category }}
+                                    
+                                </div>
+                                {% if form.category.errors %}
+                                <div class="mt-2 p-2 bg-red-50 border border-red-200 rounded-lg">
+                                    {% for error in form.category.errors %}
+                                    <p class="text-sm text-red-600 flex items-center gap-1">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        {{ error }}
+                                    </p>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Photo -->
+                    <div>
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-camera text-emerald-600"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-emerald-800">Photo de la plante</h3>
+                        </div>
+
+                        <div class="space-y-4">
+                            <!-- Zone de dépôt -->
+                            <div id="drop-zone" 
+                                 class="border-3 border-dashed border-emerald-300 rounded-2xl p-8 text-center transition-all duration-300 hover:border-emerald-500 hover:bg-emerald-50/50 cursor-pointer group/drop">
+                                <div class="max-w-sm mx-auto">
+                                    <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-emerald-100 to-green-100 rounded-2xl flex items-center justify-center group-hover/drop:scale-110 transition-transform duration-300">
+                                        <i class="fas fa-cloud-upload-alt text-2xl text-emerald-500"></i>
+                                    </div>
+                                    <h4 class="font-semibold text-emerald-800 mb-2">Glissez-déposez votre photo</h4>
+                                    <p class="text-sm text-emerald-600 mb-4">
+                                        ou cliquez pour parcourir vos fichiers
+                                    </p>
+                                    <div class="text-sm text-gray-500">
+                                        PNG, JPG, GIF jusqu'à 5MB
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    {{ form.image }}
+                                </div>
+                            </div>
+
+                            <!-- Aperçu de l'image -->
+                            <div id="image-preview" class="hidden">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm font-semibold text-emerald-700">Aperçu :</span>
+                                    <button type="button" id="remove-image" 
+                                            class="text-sm text-red-600 hover:text-red-700 flex items-center gap-1">
+                                        <i class="fas fa-times"></i>
+                                        Supprimer
+                                    </button>
+                                </div>
+                                <div class="relative w-full h-48 rounded-xl overflow-hidden border border-emerald-200">
+                                    <img id="preview-img" class="w-full h-full object-cover" alt="Aperçu">
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                                </div>
+                            </div>
+
+                            {% if form.image.errors %}
+                            <div class="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                                {% for error in form.image.errors %}
+                                <p class="text-sm text-red-600 flex items-center gap-1">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    {{ error }}
+                                </p>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Boutons d'action -->
+                    <div class="pt-6 border-t border-emerald-100">
+                        <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                            <a href="{% url 'plant_list' %}"
+                               class="w-full sm:w-auto group flex items-center justify-center gap-2 border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50 py-3 px-6 rounded-xl font-semibold transition-all duration-300">
+                                <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform duration-300"></i>
+                                Retour à la liste
+                            </a>
+                            
+                            <button type="submit"
+                                    class="w-full sm:w-auto group relative bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white py-4 px-8 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                                <span class="relative z-10 flex items-center justify-center gap-3">
+                                    <i class="fas fa-plus-circle group-hover:rotate-90 transition-transform duration-300"></i>
+                                    Ajouter la plante
+                                    <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform duration-300"></i>
+                                </span>
+                                <div class="absolute inset-0 bg-gradient-to-r from-emerald-600 to-green-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
+
+        <!-- Conseils -->
+        
     </div>
-</div>
+</section>
+
+<!-- Styles personnalisés -->
+<style>
+    /* Styles pour les champs de formulaire */
+    input[type="text"],
+    select {
+        @apply w-full pl-10 pr-4 py-3 border border-emerald-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:outline-none transition-all duration-300 bg-white;
+    }
+    
+    input[type="text"]:hover,
+    select:hover {
+        @apply border-emerald-300;
+    }
+    
+    input[type="file"] {
+        @apply w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100;
+    }
+    
+    /* Style pour les erreurs */
+    input.error,
+    select.error {
+        @apply border-red-500 focus:ring-red-500 focus:border-red-500;
+    }
+    
+    /* Animation pour la zone de drop */
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+    
+    .dragover {
+        animation: pulse 0.5s ease-in-out;
+        @apply border-emerald-500 bg-emerald-50;
+    }
+</style>
+
+<!-- Script pour la prévisualisation d'image -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.querySelector('input[type="file"]');
+        const imagePreview = document.getElementById('image-preview');
+        const previewImg = document.getElementById('preview-img');
+        const removeButton = document.getElementById('remove-image');
+
+        // Gestion du drag & drop
+        dropZone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                previewImage(e.dataTransfer.files[0]);
+            }
+        });
+
+        // Gestion du clic sur la zone
+        dropZone.addEventListener('click', function() {
+            fileInput.click();
+        });
+
+        // Gestion du changement de fichier
+        fileInput.addEventListener('change', function(e) {
+            if (e.target.files.length) {
+                previewImage(e.target.files[0]);
+            }
+        });
+
+        // Gestion de la suppression d'image
+        removeButton.addEventListener('click', function() {
+            fileInput.value = '';
+            imagePreview.classList.add('hidden');
+            dropZone.classList.remove('hidden');
+        });
+
+        // Fonction pour prévisualiser l'image
+        function previewImage(file) {
+            if (file && file.type.match('image.*')) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                    dropZone.classList.add('hidden');
+                };
+                
+                reader.readAsDataURL(file);
+                
+                // Vérifier la taille du fichier (5MB max)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Le fichier est trop volumineux. Taille maximum : 5MB');
+                    fileInput.value = '';
+                    imagePreview.classList.add('hidden');
+                    dropZone.classList.remove('hidden');
+                    return;
+                }
+            } else {
+                alert('Veuillez sélectionner une image valide (PNG, JPG, GIF)');
+                fileInput.value = '';
+            }
+        }
+
+        // Ajouter des classes d'erreur aux champs invalides
+        const inputs = document.querySelectorAll('input[type="text"], select');
+        inputs.forEach(input => {
+            const parentGroup = input.closest('.group');
+            const errorsDiv = parentGroup?.querySelector('.bg-red-50');
+            
+            if (errorsDiv) {
+                input.classList.add('border-red-500', 'focus:ring-red-500', 'focus:border-red-500');
+            }
+        });
+
+        // Validation en temps réel
+        inputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                if (this.value.trim() === '' && this.hasAttribute('required')) {
+                    this.classList.add('border-red-300');
+                } else {
+                    this.classList.remove('border-red-300');
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}

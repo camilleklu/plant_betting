@@ -49,12 +49,12 @@
                     <!-- Bouton Déconnexion -->
                     <div class="ml-2 relative group">
                         <a href="{% url 'logout' %}"
-                           class="px-4 py-2 rounded-lg bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2 group">
+                           class="px-4 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 shadow-lg hover:shadow-xl transition-all duration-300 flex items-center space-x-2 group">
                             <i class="fas fa-sign-out-alt"></i>
                             <span>Déconnexion</span>
-                            <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">👋</span>
+                            <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">🚪</span>
                         </a>
-                        <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 group-hover:w-16 h-0.5 bg-red-400 rounded-full transition-all duration-300"></div>
+                        <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 group-hover:w-20 h-0.5 bg-emerald-400 rounded-full transition-all duration-300"></div>
                     </div>
                     {% else %}
                     <!-- Boutons pour non-connectés -->
@@ -72,7 +72,7 @@
                                 <span class="font-semibold">Inscription</span>
                                 <span class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">🎉</span>
                             </a>
-                            <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 group-hover:w-20 h-0.5 bg-emerald-400 rounded-full transition-all duration-300"></div>
+                            <div class="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-0 group-hover:w-24 h-0.5 bg-emerald-400 rounded-full transition-all duration-300"></div>
                         </div>
                     </div>
                     {% endif %}
@@ -104,7 +104,7 @@
                         <span>Profil</span>
                     </a>
                     <a href="{% url 'logout' %}"
-                       class="block px-4 py-3 rounded-lg bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 transition-all duration-300 text-center font-semibold mt-4">
+                       class="block px-4 py-3 rounded-lg bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 transition-all duration-300 text-center font-semibold mt-4">
                         <i class="fas fa-sign-out-alt mr-2"></i>
                         Déconnexion
                     </a>

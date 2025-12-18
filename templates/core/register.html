@@ -3,94 +3,330 @@
 {% block title %}Inscription - Paris Plantes{% endblock %}
 
 {% block content %}
-<div class="max-w-md mx-auto bg-white rounded-xl shadow-md p-8 mt-8">
-    <div class="text-center mb-6">
-        <h1 class="text-3xl font-bold text-gray-800">Créer un compte</h1>
-        <p class="text-gray-600 mt-2">Rejoignez notre communauté de parieurs végétaux</p>
+<section class="min-h-[calc(100vh-200px)] bg-gradient-to-b from-emerald-50 to-white py-12">
+    <div class="max-w-lg mx-auto">
+        <!-- Carte d'inscription -->
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-emerald-100">
+            <!-- En-tête avec dégradé -->
+            <div class="bg-gradient-to-r from-emerald-600 to-green-600 text-white py-8 px-6 text-center">
+                <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-user-plus text-3xl"></i>
+                </div>
+                <h1 class="text-3xl font-bold mb-2">Rejoignez l'aventure !</h1>
+                <p class="text-emerald-100">Créez votre compte et commencez à parier</p>
+            </div>
+            
+            <!-- Formulaire -->
+            <div class="p-8">
+                <form method="post" class="space-y-6">
+                    {% csrf_token %}
+                    
+                    <!-- Champ Nom d'utilisateur -->
+                    <div class="group">
+                        <label for="id_username" class="block text-sm font-semibold text-emerald-700 mb-2 flex items-center gap-2">
+                            <i class="fas fa-user"></i>
+                            Nom d'utilisateur *
+                        </label>
+                        <div class="relative">
+                            {{ form.username }}
+                            
+                            {% if form.username.errors %}
+                            
+                            {% endif %}
+                        </div>
+                        {% if form.username.errors %}
+                        <div class="mt-2 p-2 bg-red-50 border border-red-200 rounded-lg">
+                            {% for error in form.username.errors %}
+                            <p class="text-sm text-red-600 flex items-center gap-1">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {{ error }}
+                            </p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        {% if form.username.help_text %}
+                        <p class="mt-2 text-xs text-emerald-600 flex items-center gap-1">
+                            <i class="fas fa-info-circle"></i>
+                            {{ form.username.help_text }}
+                        </p>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Champ Email -->
+                    <div class="group">
+                        <label for="id_email" class="block text-sm font-semibold text-emerald-700 mb-2 flex items-center gap-2">
+                            <i class="fas fa-envelope"></i>
+                            Adresse email *
+                        </label>
+                        <div class="relative">
+                            {{ form.email }}
+                            
+                            {% if form.email.errors %}
+                            
+                            {% endif %}
+                        </div>
+                        {% if form.email.errors %}
+                        <div class="mt-2 p-2 bg-red-50 border border-red-200 rounded-lg">
+                            {% for error in form.email.errors %}
+                            <p class="text-sm text-red-600 flex items-center gap-1">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {{ error }}
+                            </p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Champ Mot de passe -->
+                    <div class="group">
+                        <label for="id_password1" class="block text-sm font-semibold text-emerald-700 mb-2 flex items-center gap-2">
+                            <i class="fas fa-lock"></i>
+                            Mot de passe *
+                        </label>
+                        <div class="relative">
+                            {{ form.password1 }}
+                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center toggle-password" data-target="id_password1">
+                                <i class="fas fa-eye text-emerald-400"></i>
+                            </button>
+                        </div>
+                        {% if form.password1.errors %}
+                        <div class="mt-2 p-2 bg-red-50 border border-red-200 rounded-lg">
+                            {% for error in form.password1.errors %}
+                            <p class="text-sm text-red-600 flex items-center gap-1">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {{ error }}
+                            </p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Champ Confirmation mot de passe -->
+                    <div class="group">
+                        <label for="id_password2" class="block text-sm font-semibold text-emerald-700 mb-2 flex items-center gap-2">
+                            <i class="fas fa-lock"></i>
+                            Confirmation du mot de passe *
+                        </label>
+                        <div class="relative">
+                            {{ form.password2 }}
+                            
+                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center toggle-password" data-target="id_password2">
+                                <i class="fas fa-eye text-emerald-400"></i>
+                            </button>
+                        </div>
+                        {% if form.password2.errors %}
+                        <div class="mt-2 p-2 bg-red-50 border border-red-200 rounded-lg">
+                            {% for error in form.password2.errors %}
+                            <p class="text-sm text-red-600 flex items-center gap-1">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                {{ error }}
+                            </p>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Checkbox conditions -->
+                    <div class="flex items-start space-x-3 p-3 bg-emerald-50 rounded-lg border border-emerald-200">
+                        <input type="checkbox" id="conditions" name="conditions" required 
+                               class="w-4 h-4 text-emerald-600 border-emerald-300 rounded focus:ring-emerald-500 mt-1">
+                        <label for="conditions" class="text-sm text-gray-700">
+                            J'accepte les 
+                            <a href="#" class="text-emerald-600 hover:text-emerald-700 font-semibold">conditions d'utilisation</a> 
+                            et la 
+                            <a href="#" class="text-emerald-600 hover:text-emerald-700 font-semibold">politique de confidentialité</a> 
+                            de Paris Plantes.
+                        </label>
+                    </div>
+                    
+                    <!-- Bouton d'inscription -->
+                    <button type="submit"
+                            class="w-full group relative bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white py-4 px-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                        <span class="relative z-10 flex items-center justify-center gap-3">
+                            <i class="fas fa-rocket group-hover:rotate-12 transition-transform duration-300"></i>
+                            Créer mon compte
+                            <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform duration-300"></i>
+                        </span>
+                        <div class="absolute inset-0 bg-gradient-to-r from-emerald-600 to-green-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
+                    </button>
+                </form>
+                
+                <!-- Divider -->
+                <div class="my-8 flex items-center">
+                    <div class="flex-1 border-t border-gray-200"></div>
+                    <span class="px-4 text-gray-500 text-sm">Déjà membre ?</span>
+                    <div class="flex-1 border-t border-gray-200"></div>
+                </div>
+                
+                <!-- Lien de connexion -->
+                <div class="space-y-4 text-center">
+                    <a href="{% url 'login' %}"
+                       class="block w-full border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50 py-3 px-4 rounded-xl font-semibold transition-all duration-300 group">
+                        <span class="flex items-center justify-center gap-2">
+                            <i class="fas fa-sign-in-alt group-hover:scale-110 transition-transform duration-300"></i>
+                            Se connecter à mon compte
+                        </span>
+                    </a>
+                    
+                    <!-- Lien vers accueil -->
+                    <a href="{% url 'home' %}"
+                       class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-emerald-600 transition-colors duration-300 mt-4">
+                        <i class="fas fa-arrow-left"></i>
+                        Retour à l'accueil
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Offre de bienvenue -->
+        <div class="mt-6 bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-200">
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
+                    <i class="fas fa-gift text-white text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-amber-800 text-lg mb-2">🎁 Offre de bienvenue !</h3>
+                    <p class="text-amber-700 mb-3">
+                        Chaque nouveau compte reçoit <strong class="text-amber-900">1000 points</strong> 
+                        pour commencer à parier immédiatement !
+                    </p>
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-check text-emerald-500"></i>
+                            <span class="text-amber-800">Points offerts</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-check text-emerald-500"></i>
+                            <span class="text-amber-800">Parier immédiatement</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-check text-emerald-500"></i>
+                            <span class="text-amber-800">Classement général</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-check text-emerald-500"></i>
+                            <span class="text-amber-800">Sans engagement</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Avantages du compte -->
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-4 rounded-xl border border-emerald-100 shadow-sm">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-leaf text-emerald-600"></i>
+                    </div>
+                    <h4 class="font-semibold text-emerald-800">Parier sur les plantes</h4>
+                </div>
+                <p class="text-sm text-gray-600">Misez sur la durée de vie des plantes et gagnez des points</p>
+            </div>
+            
+            <div class="bg-white p-4 rounded-xl border border-emerald-100 shadow-sm">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-plus-circle text-emerald-600"></i>
+                    </div>
+                    <h4 class="font-semibold text-emerald-800">Ajouter vos plantes</h4>
+                </div>
+                <p class="text-sm text-gray-600">Partagez vos plantes et laissez les autres parier dessus</p>
+            </div>
+        </div>
     </div>
+</section>
 
-    <form method="post" class="space-y-4">
-        {% csrf_token %}
+<!-- Style pour les champs de formulaire -->
+<style>
+    input[type="email"],
+    input[type="password"],
+    input[type="text"] {
+        @apply w-full pl-10 pr-10 py-3 border border-emerald-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:outline-none transition-all duration-300 bg-white;
+    }
+    
+    input[type="email"]:hover,
+    input[type="password"]:hover,
+    input[type="text"]:hover {
+        @apply border-emerald-300;
+    }
+    
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    input[type="text"]:focus {
+        @apply ring-2 ring-emerald-500 border-emerald-500;
+    }
+    
+    .toggle-password {
+        @apply cursor-pointer hover:text-emerald-600 transition-colors duration-300;
+    }
+    
+    /* Style pour les champs avec erreurs */
+    input.error {
+        @apply border-red-500 focus:ring-red-500 focus:border-red-500;
+    }
+</style>
 
-        <div>
-            <label for="id_username" class="block text-sm font-medium text-gray-700 mb-1">
-                Nom d'utilisateur *
-            </label>
-            {{ form.username }}
-            {% if form.username.errors %}
-            <div class="text-red-600 text-sm mt-1">
-                {% for error in form.username.errors %}
-                <p>{{ error }}</p>
-                {% endfor %}
-            </div>
-            {% endif %}
-            {% if form.username.help_text %}
-            <p class="text-xs text-gray-500 mt-1">{{ form.username.help_text }}</p>
-            {% endif %}
-        </div>
-
-        <div>
-            <label for="id_email" class="block text-sm font-medium text-gray-700 mb-1">
-                Adresse email *
-            </label>
-            {{ form.email }}
-            {% if form.email.errors %}
-            <div class="text-red-600 text-sm mt-1">
-                {% for error in form.email.errors %}
-                <p>{{ error }}</p>
-                {% endfor %}
-            </div>
-            {% endif %}
-        </div>
-
-        <div>
-            <label for="id_password1" class="block text-sm font-medium text-gray-700 mb-1">
-                Mot de passe *
-            </label>
-            {{ form.password1 }}
-            {% if form.password1.errors %}
-            <div class="text-red-600 text-sm mt-1">
-                {% for error in form.password1.errors %}
-                <p>{{ error }}</p>
-                {% endfor %}
-            </div>
-            {% endif %}
-        </div>
-
-        <div>
-            <label for="id_password2" class="block text-sm font-medium text-gray-700 mb-1">
-                Confirmation du mot de passe *
-            </label>
-            {{ form.password2 }}
-            {% if form.password2.errors %}
-            <div class="text-red-600 text-sm mt-1">
-                {% for error in form.password2.errors %}
-                <p>{{ error }}</p>
-                {% endfor %}
-            </div>
-            {% endif %}
-        </div>
-
-        <button type="submit"
-            class="w-full bg-green-500 text-white py-3 px-4 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-300 font-semibold">
-            Créer mon compte
-        </button>
-    </form>
-
-    <div class="mt-6 text-center">
-        <p class="text-gray-600">
-            Déjà un compte ?
-            <a href="{% url 'login' %}" class="text-green-600 hover:text-green-700 font-semibold">
-                Se connecter
-            </a>
-        </p>
-    </div>
-
-    <div class="mt-6 p-4 bg-green-50 rounded-lg">
-        <h3 class="font-semibold text-green-800 mb-2">🎁 Offre de bienvenue !</h3>
-        <p class="text-sm text-green-700">
-            Chaque nouveau compte reçoit <strong>1000 points</strong> pour commencer à parier immédiatement !
-        </p>
-    </div>
-</div>
+<!-- Script pour basculer la visibilité des mots de passe -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleButtons = document.querySelectorAll('.toggle-password');
+        
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const passwordInput = document.getElementById(targetId);
+                const eyeIcon = this.querySelector('i');
+                
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                
+                // Changer l'icône
+                if (type === 'text') {
+                    eyeIcon.classList.remove('fa-eye');
+                    eyeIcon.classList.add('fa-eye-slash');
+                    eyeIcon.classList.add('text-emerald-600');
+                } else {
+                    eyeIcon.classList.remove('fa-eye-slash');
+                    eyeIcon.classList.add('fa-eye');
+                    eyeIcon.classList.remove('text-emerald-600');
+                    eyeIcon.classList.add('text-emerald-400');
+                }
+            });
+        });
+        
+        // Validation en temps réel des mots de passe
+        const password1 = document.getElementById('id_password1');
+        const password2 = document.getElementById('id_password2');
+        
+        function validatePasswords() {
+            if (password1.value && password2.value) {
+                if (password1.value !== password2.value) {
+                    password2.classList.add('border-red-500', 'focus:ring-red-500', 'focus:border-red-500');
+                    password2.classList.remove('border-emerald-300', 'focus:ring-emerald-500', 'focus:border-emerald-500');
+                } else {
+                    password2.classList.remove('border-red-500', 'focus:ring-red-500', 'focus:border-red-500');
+                    password2.classList.add('border-emerald-300', 'focus:ring-emerald-500', 'focus:border-emerald-500');
+                }
+            }
+        }
+        
+        if (password1 && password2) {
+            password1.addEventListener('input', validatePasswords);
+            password2.addEventListener('input', validatePasswords);
+        }
+        
+        // Ajouter des classes d'erreur aux champs invalides existants
+        const inputs = document.querySelectorAll('input[type="email"], input[type="password"], input[type="text"]');
+        inputs.forEach(input => {
+            // Vérifier si le champ parent a des erreurs
+            const parentGroup = input.closest('.group');
+            const errorsDiv = parentGroup?.querySelector('.bg-red-50');
+            
+            if (errorsDiv) {
+                input.classList.add('border-red-500', 'focus:ring-red-500', 'focus:border-red-500');
+            }
+        });
+    });
+</script>
 {% endblock %}

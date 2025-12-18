@@ -1,149 +1,474 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto px-4 py-8">
-
-    <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
-        <div class="md:flex">
-            <div class="md:flex-shrink-0">
-                {% if plant.image %}
-                <img class="h-64 w-full object-cover md:w-64" src="{{ plant.image.url }}" alt="{{ plant.name }}">
-                {% else %}
-                <div class="h-64 w-full md:w-64 bg-gray-200 flex items-center justify-center">No image</div>
-                {% endif %}
-            </div>
-            <div class="p-8 w-full">
-                <div class="uppercase tracking-wide text-sm text-green-500 font-semibold">{{ plant.get_category_display }}</div>
-                <h1 class="mt-1 text-4xl font-bold text-gray-900 leading-tight">{{ plant.name }}</h1>
-                <p class="mt-2 text-gray-600">Espèce : {{ plant.species }}</p>
-                <div class="mt-4 flex items-center">
-                    <div class="text-3xl font-bold text-gray-800 mr-2">{{ plant.days_alive }}</div>
-                    <span class="text-gray-500">jours de survie</span>
-                </div>
-
-                {% if not plant.is_active %}
-                <div class="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                    Cette plante est décédée le {{ plant.death_date|date:"d/m/Y" }}.
-                </div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-        <div class="lg:col-span-2 space-y-8">
-
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">Carnet de santé</h2>
-                {% if measurements %}
-                <div class="space-y-4">
-                    {% for measure in measurements %}
-                    <div class="flex items-start border-b border-gray-100 pb-4">
-                        <div class="bg-green-100 p-2 rounded-full mr-4">
-                            📝
-                        </div>
-                        <div>
-                            <p class="font-semibold text-gray-800">{{ measure.criterion.name }}</p>
-                            <p class="text-gray-600">Valeur : {{ measure.value }} {{ measure.criterion.unit }}</p>
-                            {% if measure.notes %}
-                            <p class="text-sm text-gray-500 italic mt-1">"{{ measure.notes }}"</p>
-                            {% endif %}
-                            <p class="text-xs text-gray-400 mt-1">{{ measure.measured_at|timesince }}</p>
-                        </div>
+<section class="min-h-[calc(100vh-200px)] bg-gradient-to-b from-emerald-50 to-white py-8">
+    <div class="max-w-7xl mx-auto px-4">
+        <!-- En-tête avec stats -->
+        <div class="mb-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+                <div>
+                    <h1 class="text-4xl font-bold text-emerald-900">
+                        🌿 {{ plant.name }}
+                    </h1>
+                    <div class="flex items-center gap-3 mt-2">
+                        <span class="bg-emerald-100 text-emerald-800 text-sm font-semibold px-3 py-1 rounded-full">
+                            {{ plant.get_category_display }}
+                        </span>
+                        <span class="text-emerald-600 text-sm">
+                            Espèce : {{ plant.species }}
+                        </span>
                     </div>
-                    {% endfor %}
                 </div>
-                {% else %}
-                <p class="text-gray-500 italic">Aucune donnée enregistrée pour le moment.</p>
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="space-y-6">
-
-            {% if is_owner %}
-            <div class="bg-blue-50 rounded-xl shadow-md p-6 border border-blue-200">
-                <h2 class="text-xl font-bold text-blue-900 mb-4">👑 Espace Propriétaire</h2>
-
-                <div class="mb-8">
-                    <h3 class="font-semibold text-blue-800 mb-2">Ajouter une mesure</h3>
-                    <form method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="add_measurement" value="1">
-                        <div class="space-y-3">
-                            {{ measurement_form.as_p }}
-                            <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
-                                Enregistrer
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <hr class="border-blue-200 my-6">
-
-                {% if plant.is_active %}
-                <div class="bg-red-50 p-4 rounded-lg border border-red-200">
-                    <h3 class="font-bold text-red-700 mb-2">Zone de danger</h3>
-                    <p class="text-sm text-red-600 mb-4">Si la plante est morte, signalez-le ici pour clôturer les
-                        paris.</p>
-                    <form method="post" onsubmit="return confirm('Êtes-vous sûr ? Cette action est irréversible.');">
-                        {% csrf_token %}
-                        <input type="hidden" name="declare_death" value="1">
-                        <button type="submit"
-                            class="w-full bg-red-600 text-white py-2 rounded font-bold hover:bg-red-700">
-                            💀 Déclarer la mort de la plante
-                        </button>
-                    </form>
-                </div>
-                {% endif %}
-            </div>
-
-            {% else %}
-            <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-green-500">
-                <h2 class="text-xl font-bold text-gray-800 mb-4">🎰 Zone de Paris</h2>
-
-                {% if not plant.is_active %}
-                <p class="text-red-500 font-bold text-center">Les paris sont fermés (Plante morte).</p>
-
-                {% elif user_has_bet %}
-                <div class="bg-green-50 p-4 rounded text-center">
-                    <p class="text-green-700 font-bold text-lg">✅ Pari enregistré !</p>
-                    <p class="text-green-600 text-sm mt-1">Attendez le résultat...</p>
-                </div>
-
-                {% else %}
-                <form method="post" class="space-y-4">
-                    {% csrf_token %}
-
-                    <input type="hidden" name="place_bet" value="1">
-
-                    {% if bet_form.errors %}
-                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-                        {{ bet_form.errors }}
+                
+                <div class="flex items-center gap-4">
+                    <!-- Badge statut -->
+                    {% if not plant.is_active %}
+                    <div class="bg-gradient-to-r from-red-500 to-pink-500 text-white px-4 py-2 rounded-xl font-bold shadow-lg">
+                        💀 Plante décédée
+                    </div>
+                    {% else %}
+                    <div class="bg-gradient-to-r from-emerald-500 to-green-500 text-white px-4 py-2 rounded-xl font-bold shadow-lg">
+                        🌱 Plante active
                     </div>
                     {% endif %}
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Date estimée de mort</label>
-                        {{ bet_form.predicted_death_date }}
-                    </div>
-
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Mise (Points)</label>
-                        {{ bet_form.bet_amount }}
-                    </div>
-
-                    <button type="submit"
-                        class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transform hover:-translate-y-1 transition">
-                        Placer mon pari
-                    </button>
-                </form>
-                {% endif %}
+                </div>
             </div>
-            {% endif %}
+        </div>
 
+        <!-- Carte principale de la plante -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Colonne gauche : Image et infos -->
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Carte image et stats -->
+                <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-emerald-100">
+                    <div class="relative">
+                        {% if plant.image %}
+                        <img class="w-full h-80 object-cover" src="{{ plant.image.url }}" alt="{{ plant.name }}">
+                        {% else %}
+                        <div class="w-full h-80 bg-gradient-to-br from-emerald-100 to-green-100 flex items-center justify-center">
+                            <div class="text-center">
+                                <span class="text-8xl mb-4">🌱</span>
+                                <p class="text-emerald-600 font-medium">Photo non disponible</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Badge propriétaire -->
+                        <div class="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-xl px-4 py-2 shadow-lg">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-user text-emerald-600"></i>
+                                <div>
+                                    <p class="text-xs text-gray-500">Propriétaire</p>
+                                    <p class="font-semibold text-emerald-800">{{ plant.owner.username }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Badge âge -->
+                        <div class="absolute top-4 right-4 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-xl px-4 py-2 shadow-lg text-center">
+                            <div class="text-2xl font-bold">{{ plant.days_alive|default:"0" }}</div>
+                            <div class="text-xs text-emerald-100">jours de vie</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Stats en grille -->
+                    <div class="p-6">
+                        
+                        
+                        
+                        <!-- Message décès -->
+                        {% if not plant.is_active %}
+                        <div class="mt-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 rounded-xl border border-red-200">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-skull-crossbones text-red-600"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-red-800">Plante décédée</h3>
+                                    <p class="text-red-700 text-sm">
+                                        Cette plante est décédée le <strong>{{ plant.death_date|date:"d/m/Y" }}</strong>.
+                                        Les paris sont maintenant clos.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Carnet de santé -->
+                <div class="bg-white rounded-2xl shadow-xl p-6 border border-emerald-100">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-heartbeat text-white"></i>
+                            </div>
+                            <h2 class="text-2xl font-bold text-gray-800">📊 Carnet de santé</h2>
+                        </div>
+                        <span class="text-sm text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
+                            {{ measurements|length }} mesures
+                        </span>
+                    </div>
+                    
+                    {% if measurements %}
+                    <div class="space-y-4">
+                        {% for measure in measurements %}
+                        <div class="group bg-gradient-to-r from-gray-50 to-white hover:from-emerald-50 hover:to-green-50 p-4 rounded-xl border border-gray-100 hover:border-emerald-200 transition-all duration-300">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-gradient-to-r from-emerald-100 to-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-chart-line text-emerald-600"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-start mb-1">
+                                        <h3 class="font-bold text-gray-800">{{ measure.criterion.name }}</h3>
+                                        <span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-1 rounded-full">
+                                            {{ measure.measured_at|timesince }}
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <div class="text-2xl font-bold text-emerald-700">
+                                            {{ measure.value }} {{ measure.criterion.unit }}
+                                        </div>
+                                        {% if measure.is_normal %}
+                                        <span class="text-xs bg-emerald-100 text-emerald-800 px-2 py-1 rounded-full">
+                                            ✅ Normal
+                                        </span>
+                                        {% else %}
+                                        <span class="text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded-full">
+                                            ⚠️ Anormal
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                    {% if measure.notes %}
+                                    <div class="bg-blue-50 p-3 rounded-lg border border-blue-100">
+                                        <p class="text-sm text-blue-800 italic">
+                                            <i class="fas fa-quote-left mr-1"></i>
+                                            {{ measure.notes }}
+                                        </p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-8">
+                        <div class="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center">
+                            <i class="fas fa-clipboard-list text-gray-400 text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-700 mb-2">Aucune donnée enregistrée</h3>
+                        <p class="text-gray-500 max-w-md mx-auto">
+                            Le propriétaire n'a pas encore ajouté de mesures pour cette plante.
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Colonne droite : Actions -->
+            <div class="space-y-6">
+                {% if is_owner %}
+                <!-- Espace Propriétaire -->
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl shadow-xl p-6 border border-blue-200">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center shadow-md">
+                            <i class="fas fa-crown text-white"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-blue-900">👑 Espace Propriétaire</h2>
+                            <p class="text-blue-600 text-sm">Gérez votre plante</p>
+                        </div>
+                    </div>
+
+                    <!-- Formulaire ajout mesure -->
+                    <div class="mb-8">
+                        <h3 class="font-semibold text-blue-800 mb-4 flex items-center gap-2">
+                            <i class="fas fa-plus-circle"></i>
+                            Ajouter une mesure
+                        </h3>
+                        <form method="post" class="space-y-4">
+                            {% csrf_token %}
+                            <input type="hidden" name="add_measurement" value="1">
+                            
+                            {% for field in measurement_form %}
+                            <div class="group">
+                                <label class="block text-sm font-semibold text-blue-700 mb-2">
+                                    {{ field.label }}
+                                </label>
+                                <div class="relative">
+                                    {{ field }}
+                                    {% if field.name == 'criterion' %}
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-list text-blue-400"></i>
+                                    </div>
+                                    {% elif field.name == 'value' %}
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <i class="fas fa-hashtag text-blue-400"></i>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                {% if field.errors %}
+                                <div class="mt-1 text-sm text-red-600">
+                                    {{ field.errors }}
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                            
+                            <button type="submit"
+                                    class="w-full group relative bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white py-3 px-4 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-300">
+                                <span class="flex items-center justify-center gap-2">
+                                    <i class="fas fa-save group-hover:rotate-12 transition-transform duration-300"></i>
+                                    Enregistrer la mesure
+                                </span>
+                            </button>
+                        </form>
+                    </div>
+
+                    {% if plant.is_active %}
+                    <!-- Zone de danger -->
+                    <div class="bg-gradient-to-r from-red-50 to-orange-50 rounded-xl p-4 border border-red-200">
+                        <div class="flex items-start gap-3 mb-4">
+                            <div class="w-10 h-10 bg-gradient-to-r from-red-500 to-orange-500 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-skull text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-red-800 mb-1">Zone de danger</h3>
+                                <p class="text-red-700 text-sm">
+                                    Si la plante est morte, signalez-le ici pour clôturer les paris.
+                                </p>
+                            </div>
+                        </div>
+                        <form method="post" onsubmit="return confirm('Êtes-vous sûr ? Cette action est irréversible.');">
+                            {% csrf_token %}
+                            <input type="hidden" name="declare_death" value="1">
+                            <button type="submit"
+                                    class="w-full group relative bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white py-3 px-4 rounded-xl font-bold shadow-md hover:shadow-lg transition-all duration-300">
+                                <span class="flex items-center justify-center gap-2">
+                                    <i class="fas fa-skull-crossbones group-hover:rotate-180 transition-transform duration-300"></i>
+                                    Déclarer la mort de la plante
+                                </span>
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% else %}
+                <!-- Zone de Paris -->
+                <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl shadow-xl p-6 border border-amber-200">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-md">
+                            <i class="fas fa-coins text-white"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-amber-900">🎰 Zone de Paris</h2>
+                            <p class="text-amber-600 text-sm">Misez sur la durée de vie</p>
+                        </div>
+                    </div>
+
+                    {% if not plant.is_active %}
+                    <!-- Paris fermés -->
+                    <div class="text-center py-6">
+                        
+                        <h3 class="text-lg font-bold text-red-700 mb-2">Paris fermés</h3>
+                        <p class="text-red-600 text-sm">
+                            Cette plante est décédée, les paris sont maintenant clos.
+                        </p>
+                    </div>
+
+                    {% elif user_has_bet %}
+                    <!-- Pari déjà placé -->
+                    <div class="text-center py-6">
+                        
+                        <h3 class="text-lg font-bold text-emerald-700 mb-2">✅ Pari enregistré !</h3>
+                        <p class="text-emerald-600 text-sm mb-4">
+                            Votre pari a été enregistré avec succès.
+                        </p>
+                        <div class="bg-white p-4 rounded-xl border border-emerald-200">
+                            <p class="text-sm text-gray-600">Attendez le résultat final...</p>
+                        </div>
+                    </div>
+
+                    {% else %}
+                    <!-- Formulaire pari -->
+                    <form method="post" class="space-y-6">
+                        {% csrf_token %}
+                        <input type="hidden" name="place_bet" value="1">
+
+                        {% if bet_form.errors %}
+                        <div class="bg-red-50 border border-red-200 rounded-xl p-4">
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-exclamation-triangle text-red-500 mt-1"></i>
+                                <div>
+                                    <h4 class="font-semibold text-red-800 mb-1">Erreurs détectées :</h4>
+                                    {% for error in bet_form.non_field_errors %}
+                                    <p class="text-sm text-red-700">{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Date estimée -->
+                        <div class="group">
+                            <label class="block text-sm font-semibold text-amber-800 mb-2 flex items-center gap-2">
+                                <i class="fas fa-calendar-day"></i>
+                                Date estimée de mort *
+                            </label>
+                            <div class="relative">
+                                {{ bet_form.predicted_death_date }}
+                                
+                            </div>
+                            {% if bet_form.predicted_death_date.errors %}
+                            <div class="mt-1 text-sm text-red-600">
+                                {{ bet_form.predicted_death_date.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Mise -->
+                        <div class="group">
+                            <label class="block text-sm font-semibold text-amber-800 mb-2 flex items-center gap-2">
+                                <i class="fas fa-coins"></i>
+                                Mise (Points) *
+                            </label>
+                            <div class="relative">
+                                {{ bet_form.bet_amount }}
+                                
+                            </div>
+                            {% if bet_form.bet_amount.errors %}
+                            <div class="mt-1 text-sm text-red-600">
+                                {{ bet_form.bet_amount.errors }}
+                            </div>
+                            {% endif %}
+                            <div class="mt-2 text-xs text-amber-600">
+                                <p>Minimum : 10 points • Maximum : 500 points</p>
+                            </div>
+                        </div>
+
+                        <!-- Bouton pari -->
+                        <button type="submit"
+                                class="w-full group relative bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-4 px-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                            <span class="relative z-10 flex items-center justify-center gap-3">
+                                <i class="fas fa-dice group-hover:rotate-180 transition-transform duration-300"></i>
+                                Placer mon pari
+                                <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform duration-300"></i>
+                            </span>
+                            <div class="absolute inset-0 bg-gradient-to-r from-amber-600 to-orange-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
+                        </button>
+                    </form>
+                    {% endif %}
+                    
+                    <!-- Info multiplicateur -->
+                    <div class="mt-6 p-4 bg-gradient-to-r from-emerald-50 to-green-50 rounded-xl border border-emerald-200">
+                        <h4 class="font-semibold text-emerald-800 mb-2">🎯 Gains possibles</h4>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between items-center">
+                                <span class="text-emerald-700">Précision parfaite</span>
+                                <span class="bg-emerald-500 text-white px-2 py-1 rounded-full text-xs font-bold">×5</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-emerald-700">±1 à 3 jours</span>
+                                <span class="bg-emerald-400 text-white px-2 py-1 rounded-full text-xs font-bold">×3</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-emerald-700">±4 à 7 jours</span>
+                                <span class="bg-emerald-300 text-white px-2 py-1 rounded-full text-xs font-bold">×1.5</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- CTA vers liste -->
+                <div class="bg-white rounded-2xl shadow-sm p-4 border border-emerald-100">
+                    <a href="{% url 'plant_list' %}"
+                       class="group flex items-center justify-center gap-2 text-emerald-600 hover:text-emerald-700 font-semibold">
+                        <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform duration-300"></i>
+                        Retour à la liste des plantes
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</section>
+
+<!-- Styles personnalisés -->
+<style>
+    /* Styles pour les champs de formulaire */
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select,
+    textarea {
+        @apply w-full pl-10 pr-4 py-3 border border-emerald-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:outline-none transition-all duration-300 bg-white;
+    }
+    
+    input[type="text"]:hover,
+    input[type="number"]:hover,
+    input[type="date"]:hover,
+    select:hover,
+    textarea:hover {
+        @apply border-emerald-300;
+    }
+    
+    /* Style pour les champs avec erreurs */
+    input.error,
+    select.error,
+    textarea.error {
+        @apply border-red-500 focus:ring-red-500 focus:border-red-500;
+    }
+    
+    /* Animation pour les cartes */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .animate-fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
+    }
+</style>
+
+<!-- Script pour les animations -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ajouter des classes d'erreur aux champs invalides
+        const inputs = document.querySelectorAll('input[type="text"], input[type="number"], input[type="date"], select, textarea');
+        inputs.forEach(input => {
+            const parentGroup = input.closest('.group');
+            const errorsDiv = parentGroup?.querySelector('.text-red-600');
+            
+            if (errorsDiv) {
+                input.classList.add('border-red-500', 'focus:ring-red-500', 'focus:border-red-500');
+            }
+        });
+        
+        // Validation en temps réel
+        inputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                if (this.value.trim() === '' && this.hasAttribute('required')) {
+                    this.classList.add('border-red-300');
+                } else {
+                    this.classList.remove('border-red-300');
+                }
+            });
+        });
+        
+        // Animation d'entrée pour les éléments
+        const cards = document.querySelectorAll('.bg-white, .rounded-2xl');
+        cards.forEach((card, index) => {
+            card.classList.add('animate-fade-in');
+            card.style.animationDelay = `${index * 0.1}s`;
+        });
+    });
+</script>
 {% endblock %}
