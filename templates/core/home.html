@@ -2,19 +2,20 @@
 
 {% block content %}
 <!-- Hero Section avec dégradé amélioré -->
-<section class="relative bg-gradient-to-br from-emerald-500 via-green-500 to-emerald-600 text-white py-20 md:py-28 overflow-hidden">
+<section
+    class="relative bg-gradient-to-br from-emerald-500 via-green-500 to-emerald-600 text-white py-20 md:py-28 overflow-hidden">
     <!-- Effets décoratifs -->
     <div class="absolute inset-0 overflow-hidden">
         <div class="absolute -top-20 -right-20 w-64 h-64 bg-emerald-400 rounded-full opacity-20 blur-3xl"></div>
         <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-green-400 rounded-full opacity-20 blur-3xl"></div>
     </div>
-    
+
     <div class="max-w-7xl mx-auto px-4 text-center relative z-10">
         <h1 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
             Paris sur la Mort des Plantes
         </h1>
         <p class="text-xl md:text-2xl mb-10 text-emerald-100 max-w-3xl mx-auto">
-            Pariez sur la durée de vie des plantes, prouvez votre intuition verte 
+            Pariez sur la durée de vie des plantes, prouvez votre intuition verte
             et montez dans le classement !
         </p>
 
@@ -26,9 +27,11 @@
                     🎯 Commencer à parier
                     <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform duration-300"></i>
                 </span>
-                <div class="absolute inset-0 bg-gradient-to-r from-emerald-600 to-green-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
+                <div
+                    class="absolute inset-0 bg-gradient-to-r from-emerald-600 to-green-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm">
+                </div>
             </a>
-            
+
             <a href="{% url 'rules' %}"
                 class="group px-8 py-4 border-2 border-white/50 hover:border-white rounded-xl font-semibold text-lg hover:bg-white/10 transition-all duration-300 backdrop-blur-sm">
                 <span class="flex items-center justify-center gap-3">
@@ -45,9 +48,11 @@
                     🌿 Voir les plantes
                     <i class="fas fa-seedling group-hover:rotate-180 transition-transform duration-300"></i>
                 </span>
-                <div class="absolute inset-0 bg-gradient-to-r from-emerald-600 to-green-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
+                <div
+                    class="absolute inset-0 bg-gradient-to-r from-emerald-600 to-green-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm">
+                </div>
             </a>
-            
+
             <a href="{% url 'add_plant' %}"
                 class="group px-8 py-4 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transition-all duration-300">
                 <span class="flex items-center justify-center gap-3">
@@ -57,7 +62,7 @@
             </a>
         </div>
         {% endif %}
-        
+
         <!-- Statistiques rapides -->
         <div class="mt-16 grid grid-cols-2 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
             <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 hover:scale-105 transition-transform duration-300">
@@ -91,29 +96,33 @@
         {% if active_plants %}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {% for plant in active_plants %}
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-emerald-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 group">
+            <div
+                class="bg-white rounded-2xl shadow-xl overflow-hidden border border-emerald-100 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 group">
                 <!-- Image de la plante -->
                 <div class="relative h-56 overflow-hidden">
                     {% if plant.image %}
-                    <img src="{{ plant.image.url }}" alt="{{ plant.name }}" 
-                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    <img src="{{ plant.image.url }}" alt="{{ plant.name }}"
+                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                     {% else %}
-                    <div class="w-full h-full bg-gradient-to-br from-emerald-100 to-green-100 flex items-center justify-center">
+                    <div
+                        class="w-full h-full bg-gradient-to-br from-emerald-100 to-green-100 flex items-center justify-center">
                         <span class="text-6xl">🌱</span>
                     </div>
                     {% endif %}
-                    
+
                     <!-- Badge d'âge -->
-                    <div class="absolute top-4 right-4 bg-gradient-to-r from-emerald-500 to-green-500 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+                    <div
+                        class="absolute top-4 right-4 bg-gradient-to-r from-emerald-500 to-green-500 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
                         {{ plant.days_alive|default:"0" }} jours
                     </div>
-                    
+
                     <!-- Overlay au survol -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-emerald-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                         <span class="text-white font-bold text-lg">Voir les détails →</span>
                     </div>
                 </div>
-                
+
                 <!-- Contenu de la carte -->
                 <div class="p-6">
                     <div class="flex justify-between items-start mb-3">
@@ -133,25 +142,22 @@
                             {% endif %}
                         </div>
                     </div>
-                    
+
                     <!-- Informations -->
                     <div class="grid grid-cols-2 gap-3 mb-4">
                         <div class="flex items-center gap-2">
                             <span class="text-emerald-600">👤</span>
                             <span class="text-sm text-gray-600">{{ plant.owner.username|truncatechars:15 }}</span>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-emerald-600">💰</span>
-                            <span class="text-sm text-gray-600">{{ plant.total_bets|default:"0" }} paris</span>
-                        </div>
                     </div>
-                    
+
                     <!-- Bouton -->
                     <a href="{% url 'plant_detail' plant.pk %}"
-                       class="block w-full bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white text-center py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300 group">
+                        class="block w-full bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white text-center py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300 group">
                         <span class="flex items-center justify-center gap-2">
                             Parier sur cette plante
-                            <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform duration-300"></i>
+                            <i
+                                class="fas fa-arrow-right group-hover:translate-x-2 transition-transform duration-300"></i>
                         </span>
                     </a>
                 </div>
@@ -160,38 +166,40 @@
         </div>
         {% else %}
         <!-- Message si aucune plante -->
-        <div class="bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl p-8 text-center border-2 border-dashed border-emerald-200">
-            <div class="w-20 h-20 bg-gradient-to-br from-emerald-100 to-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div
+            class="bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl p-8 text-center border-2 border-dashed border-emerald-200">
+            <div
+                class="w-20 h-20 bg-gradient-to-br from-emerald-100 to-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span class="text-4xl">🌱</span>
             </div>
             <h3 class="text-2xl font-bold text-emerald-800 mb-2">Aucune plante active</h3>
             <p class="text-emerald-600 mb-6">Soyez le premier à ajouter une plante et lancez les paris !</p>
             {% if user.is_authenticated %}
             <a href="{% url 'add_plant' %}"
-               class="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                class="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
                 <i class="fas fa-plus"></i>
                 Ajouter ma première plante
             </a>
             {% else %}
             <div class="flex gap-4 justify-center">
                 <a href="{% url 'register' %}"
-                   class="bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+                    class="bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
                     S'inscrire pour commencer
                 </a>
                 <a href="{% url 'login' %}"
-                   class="border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50 px-6 py-3 rounded-lg font-semibold transition-all duration-300">
+                    class="border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50 px-6 py-3 rounded-lg font-semibold transition-all duration-300">
                     Se connecter
                 </a>
             </div>
             {% endif %}
         </div>
         {% endif %}
-        
+
         <!-- CTA pour voir plus de plantes -->
         {% if active_plants %}
         <div class="mt-12 text-center">
             <a href="{% url 'plant_list' %}"
-               class="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300">
+                class="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white px-8 py-4 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300">
                 <span>Voir toutes les plantes</span>
                 <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform duration-300"></i>
             </a>
@@ -207,18 +215,18 @@
         <p class="text-xl text-emerald-100 mb-8">
             Rejoignez des centaines de passionnés qui ont déjà découvert le plaisir du pari végétal
         </p>
-        
+
         {% if not user.is_authenticated %}
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="{% url 'register' %}"
-               class="group relative px-8 py-4 bg-white text-emerald-700 rounded-xl font-bold text-lg shadow-2xl hover:shadow-3xl transition-all duration-300">
+                class="group relative px-8 py-4 bg-white text-emerald-700 rounded-xl font-bold text-lg shadow-2xl hover:shadow-3xl transition-all duration-300">
                 <span class="relative z-10 flex items-center justify-center gap-3">
                     🚀 S'inscrire gratuitement
                     <i class="fas fa-rocket group-hover:translate-x-2 transition-transform duration-300"></i>
                 </span>
             </a>
             <a href="{% url 'login' %}"
-               class="group px-8 py-4 border-2 border-white rounded-xl font-bold text-lg hover:bg-white/10 transition-all duration-300">
+                class="group px-8 py-4 border-2 border-white rounded-xl font-bold text-lg hover:bg-white/10 transition-all duration-300">
                 <span class="flex items-center justify-center gap-3">
                     🔑 Se connecter
                 </span>
@@ -227,21 +235,21 @@
         {% else %}
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="{% url 'plant_list' %}"
-               class="group relative px-8 py-4 bg-white text-emerald-700 rounded-xl font-bold text-lg shadow-2xl hover:shadow-3xl transition-all duration-300">
+                class="group relative px-8 py-4 bg-white text-emerald-700 rounded-xl font-bold text-lg shadow-2xl hover:shadow-3xl transition-all duration-300">
                 <span class="relative z-10 flex items-center justify-center gap-3">
                     🌿 Voir les plantes
                     <i class="fas fa-seedling group-hover:rotate-180 transition-transform duration-300"></i>
                 </span>
             </a>
             <a href="{% url 'leaderboard' %}"
-               class="group px-8 py-4 border-2 border-white rounded-xl font-bold text-lg hover:bg-white/10 transition-all duration-300">
+                class="group px-8 py-4 border-2 border-white rounded-xl font-bold text-lg hover:bg-white/10 transition-all duration-300">
                 <span class="flex items-center justify-center gap-3">
                     🏆 Voir le classement
                 </span>
             </a>
         </div>
         {% endif %}
-        
+
         <p class="mt-8 text-emerald-200 text-sm">
             Aucun risque financier • Jeu 100% gratuit • Communauté bienveillante
         </p>

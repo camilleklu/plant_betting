@@ -9,21 +9,23 @@
         <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-emerald-100">
             <!-- En-tête avec dégradé -->
             <div class="bg-gradient-to-r from-emerald-600 to-green-600 text-white py-8 px-6 text-center">
-                <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <div
+                    class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-leaf text-3xl"></i>
                 </div>
                 <h1 class="text-3xl font-bold mb-2">Bienvenue !</h1>
                 <p class="text-emerald-100">Accédez à votre compte Paris Plantes</p>
             </div>
-            
+
             <!-- Formulaire -->
             <div class="p-8">
                 <form method="post" class="space-y-6">
                     {% csrf_token %}
-                    
+
                     <!-- Champ Email -->
                     <div class="group">
-                        <label for="id_email" class="block text-sm font-semibold text-emerald-700 mb-2 flex items-center gap-2">
+                        <label for="id_email"
+                            class="block text-sm font-semibold text-emerald-700 mb-2 flex items-center gap-2">
                             Adresse email
                         </label>
                         <div class="relative">
@@ -35,14 +37,15 @@
                         </div>
                         {% endif %}
                     </div>
-                    
+
                     <!-- Champ Mot de passe -->
                     <div class="group">
                         <div class="relative">
                             {{ form.password }}
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             </div>
-                            <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center toggle-password">
+                            <button type="button"
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center toggle-password">
                                 <i class="fas fa-eye text-emerald-400"></i>
                             </button>
                         </div>
@@ -52,54 +55,50 @@
                         </div>
                         {% endif %}
                     </div>
-                    
-                    <!-- Checkbox Se souvenir de moi -->
-                    <div class="flex items-center">
-                        <input type="checkbox" id="remember" name="remember" class="w-4 h-4 text-emerald-600 border-emerald-300 rounded focus:ring-emerald-500">
-                        <label for="remember" class="ml-2 text-sm text-gray-700">
-                            Se souvenir de moi
-                        </label>
-                    </div>
-                    
+
+
                     <!-- Bouton de connexion -->
                     <button type="submit"
-                            class="w-full group relative bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white py-4 px-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                        class="w-full group relative bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white py-4 px-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
                         <span class="relative z-10 flex items-center justify-center gap-3">
                             <i class="fas fa-sign-in-alt group-hover:rotate-12 transition-transform duration-300"></i>
                             Se connecter
-                            <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform duration-300"></i>
+                            <i
+                                class="fas fa-arrow-right group-hover:translate-x-2 transition-transform duration-300"></i>
                         </span>
-                        <div class="absolute inset-0 bg-gradient-to-r from-emerald-600 to-green-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
+                        <div
+                            class="absolute inset-0 bg-gradient-to-r from-emerald-600 to-green-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm">
+                        </div>
                     </button>
-                    
+
                     {% if next %}
                     <input type="hidden" name="next" value="{{ next }}">
                     {% endif %}
                 </form>
-                
+
                 <!-- Divider -->
                 <div class="my-8 flex items-center">
                     <div class="flex-1 border-t border-gray-200"></div>
                     <span class="px-4 text-gray-500 text-sm">ou</span>
                     <div class="flex-1 border-t border-gray-200"></div>
                 </div>
-                
+
                 <!-- Liens d'inscription -->
                 <div class="space-y-4 text-center">
                     <p class="text-gray-600">
                         Pas encore membre de Paris Plantes ?
                     </p>
                     <a href="{% url 'register' %}"
-                       class="block w-full border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50 py-3 px-4 rounded-xl font-semibold transition-all duration-300 group">
+                        class="block w-full border-2 border-emerald-500 text-emerald-600 hover:bg-emerald-50 py-3 px-4 rounded-xl font-semibold transition-all duration-300 group">
                         <span class="flex items-center justify-center gap-2">
                             <i class="fas fa-user-plus group-hover:scale-110 transition-transform duration-300"></i>
                             Créer un compte gratuit
                         </span>
                     </a>
-                    
+
                     <!-- Lien vers accueil -->
                     <a href="{% url 'home' %}"
-                       class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-emerald-600 transition-colors duration-300 mt-4">
+                        class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-emerald-600 transition-colors duration-300 mt-4">
                         <i class="fas fa-arrow-left"></i>
                         Retour à l'accueil
                     </a>
@@ -116,13 +115,13 @@
     input[type="text"] {
         @apply w-full pl-10 pr-10 py-3 border border-emerald-200 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 focus:outline-none transition-all duration-300 bg-white;
     }
-    
+
     input[type="email"]:hover,
     input[type="password"]:hover,
     input[type="text"]:hover {
         @apply border-emerald-300;
     }
-    
+
     .toggle-password {
         @apply cursor-pointer hover:text-emerald-600 transition-colors duration-300;
     }
@@ -130,15 +129,15 @@
 
 <!-- Script pour basculer la visibilité du mot de passe -->
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const togglePassword = document.querySelector('.toggle-password');
         const passwordInput = document.querySelector('input[type="password"]');
         const eyeIcon = togglePassword.querySelector('i');
-        
-        togglePassword.addEventListener('click', function() {
+
+        togglePassword.addEventListener('click', function () {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
-            
+
             // Changer l'icône
             if (type === 'text') {
                 eyeIcon.classList.remove('fa-eye');
@@ -156,7 +155,7 @@
 
 <!-- Script pour les erreurs de formulaire -->
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         // Ajouter des classes d'erreur aux champs invalides
         const inputs = document.querySelectorAll('input[type="email"], input[type="password"], input[type="text"]');
         inputs.forEach(input => {
@@ -164,9 +163,9 @@
             if (input.classList.contains('error')) {
                 input.classList.add('border-red-500', 'focus:ring-red-500', 'focus:border-red-500');
             }
-            
+
             // Ajouter un effet de validation en temps réel
-            input.addEventListener('blur', function() {
+            input.addEventListener('blur', function () {
                 if (this.value.trim() === '' && this.hasAttribute('required')) {
                     this.classList.add('border-red-300');
                 } else {

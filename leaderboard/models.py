@@ -25,3 +25,16 @@ class UserScore(models.Model):
         scores = UserScore.objects.filter(total_points__gt=self.total_points)
         self.rank = scores.count() + 1
         self.save()
+    
+    
+    @property
+    def total_bets(self):
+        """Retourne le nombre total de paris (Gagnés + Perdus)"""
+        return self.bets_won + self.bets_lost
+
+    def calculate_accuracy(self):
+        # Tu peux maintenant utiliser self.total_bets ici aussi !
+        if self.total_bets > 0:
+            self.accuracy_rate = (self.bets_won / self.total_bets) * 100
+        else:
+            self.accuracy_rate = 0.0
